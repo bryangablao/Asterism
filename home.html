@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>※</title>
+
+<style>
+:root {
+  --bg: #0f0f14;
+  --panel: #1a1a25;
+  --panel-dark: #14141d;
+  --accent: #4b5cff;
+  --text: #ffffff;
+  --muted: #9a9ab5;
+}
+
+* { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* APP LAYOUT */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ICON BAR */
+.icon-bar {
+  width: 60px;
+  background: var(--panel-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  gap: 16px;
+  position: sticky;
+  height: 100vh;
+  top: 0;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: background 0.2s, color 0.2s;
+}
+
+.icon:hover {
+  background: var(--panel);
+  color: white;
+}
+
+.icon.bottom {
+  margin-top: auto;
+}
+
+/* EXPAND PANEL */
+.panel {
+  position: absolute;
+  left: 60px;               /* right after icon bar */
+  top: 0;
+  height: 100vh;
+
+  width: 280px;
+  background: var(--panel);
+  border-right: 1px solid #222;
+
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: 500;
+}
+
+.panel.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panel-header {
+  padding: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid #2a2a3d;
+  flex-shrink: 0;
+}
+
+.panel-content {
+  padding: 16px;
+  overflow-y: auto;
+  color: var(--muted);
+  flex: 1;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  padding: 40px;
+}
+
+.main h1 {
+  margin-top: 0;
+}
+
+.modal-box input {
+  width: 100%;
+  padding: 10px;
+  background: #2a2a3d;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  margin-top: 10px;
+}
+
+/* CARDS */
+.card {
+  background:#1e1e1e;
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover {
+  background:#2a2a2a;
+  transform:translateY(-2px);
+}
+
+.card-title {
+  font-size:16px;
+  font-weight:600;
+}
+.card-desc {
+  font-size:13px;
+  color:#aaa;
+  margin-top:5px;
+}
+
+/* BUTTONS */
+.btn {
+  background:#4f46e5;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+}
+.btn.secondary {
+  background:#333;
+}
+
+/* INPUTS */
+input, textarea, select {
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+/* TAGS */
+.tags {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tag {
+  background:#333;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+/* TABS */
+.tabs {
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+.tab {
+  flex:1;
+  padding:10px;
+  text-align:center;
+  background:#2a2a2a;
+  border-radius:8px;
+  cursor:pointer;
+}
+.tab.active {
+  background:#4f46e5;
+}
+
+.profile-menu {
+  position: absolute;
+  top: auto;
+  bottom: 20px;      /* near bottom icons */
+  left: 70px;        /* beside taskbar */
+  width: 220px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  z-index: 1000;
+}
+
+.profile-menu.hidden { display:none; }
+
+
+/* PROFILE IMAGE */
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar::after {
+  content: "📷";
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,.6);
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.avatar-menu {
+  position: absolute;
+  top: 50%;
+  left: 170px;
+  transform: translateY(-50%) scale(.95);
+  opacity: 0;
+  pointer-events: none;
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 4px;
+  width: 170px;          /* smaller */
+  box-shadow: 0 8px 20px rgba(0,0,0,.45);
+  transition: .2s ease;
+  z-index: 10;
+  text-align: left;     /* ✅ left aligned */
+}
+
+.avatar-menu div {
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;      /* smaller text */
+  line-height: 1.2;
+}
+
+.avatar-menu.show {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  pointer-events: auto;
+}
+
+.avatar-menu div:hover {
+  background: #2a2a2a;
+}
+
+.pm-name {
+  cursor:pointer;
+}
+.pm-name span {
+  font-size:12px;
+  color:#aaa;
+}
+
+.pm-item {
+  padding:8px;
+  cursor:pointer;
+  border-radius:6px;
+}
+.pm-item:hover {
+  background:#2a2a2a;
+}
+
+.pm-item.danger {
+  color:#ff6b6b;
+}
+
+/* SYSTEM MODAL (PASSWORD / EDIT / LOGOUT) */
+.system-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+
+/* animation stays */
+.modal-box img {
+  animation: zoomIn .25s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================= */
+/* IMPROVED MODAL (ADD BELOW)    */
+/* ============================= */
+
+.modal-box {
+  background: var(--panel);
+  width: 420px;
+  padding: 22px;
+  border-radius: 12px;
+
+  /* NEW layout improvements */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-box h3 {
+  margin: 0 0 6px;
+}
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* UTILITIES */
+.hidden {
+  display: none !important;
+}
+
+.profile-info span,
+.bio-label,
+.card label {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.bio-hint {
+  font-size: 11px;
+  color: #7a7a9d;
+  margin-left: 6px;
+  display: none;
+}
+
+.bio-textarea:focus ~ .bio-hint,
+.bio-textarea:focus + .bio-hint {
+  display: inline;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ff6b6b;
+  transition: width .2s;
+}
+
+/* ===================== */
+/* HELP CHAT REDESIGN    */
+/* ===================== */
+
+.help-container {
+  max-width: 760px;
+  margin: 0 auto;
+  background: #14141d;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #2a2a3d;
+}
+
+.help-header {
+  padding: 14px 18px;
+  background: #1a1a25;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.help-header .status {
+  font-size: 12px;
+  color: #4ade80;
+}
+
+.chat-area {
+  height: 480px;                 /* ✅ LONGER CHAT */
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+/* SCROLLBAR */
+.chat-area::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-area::-webkit-scrollbar-thumb {
+  background: #3a3a55;
+  border-radius: 10px;
+}
+
+/* MESSAGE BASE */
+.msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  font-size: 14px;
+}
+
+/* BOT */
+.msg.bot {
+  align-self: flex-start;
+}
+.msg.bot .name {
+  font-size: 11px;
+  color: #9a9ab5;
+  margin-bottom: 4px;
+}
+.msg.bot .bubble {
+  background: #2a2a3d;
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+/* USER */
+.msg.user {
+  align-self: flex-end;
+}
+.msg.user .bubble {
+  background: #4f46e5;
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+/* TYPING */
+.typing {
+  font-size: 12px;
+  color: #9a9ab5;
+}
+
+/* CATEGORY / QUESTION BUTTONS */
+.tag {
+  background: #2a2a3d;
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tag:hover {
+  background: #3a3a55;
+}
+
+.typing {
+  font-size: 12px;
+  color: #9a9ab5;
+  animation: floatText 1.2s ease-in-out infinite;
+}
+
+@keyframes floatText {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+.panel .card {
+  background: transparent;
+  padding: 10px 6px;
+  margin: 4px 0;
+  border-radius: 6px;
+}
+
+.panel .card:hover {
+  background: #2a2a3d;
+  transform: none;
+}
+
+.notification.unread {
+  border-left: 4px solid #4f46e5;
+}
+
+.message.unread {
+  border-left: 4px solid #4f46e5;
+  font-weight: 600;
+}
+
+/* HEADER */
+.msg-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.msg-header-right {
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.msg-search {
+  width:200px;
+}
+
+/* MESSAGE LIST */
+.msg-list {
+  margin-top:12px;
+}
+.msg-item {
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.15s;
+  background:#1e1e1e;
+  margin-bottom:6px;
+}
+.msg-item:hover {
+  background:#2a2a2a;
+}
+.msg-item.selected {
+  background:#2f2f55;
+}
+.msg-item.unread .msg-title {
+  font-weight:700;
+}
+
+/* MESSAGE TEXT */
+.msg-title {
+  font-size:14px;
+}
+.msg-preview {
+  font-size:12px;
+  color:#aaa;
+  margin-top:2px;
+}
+
+/* TOOLBAR BUTTONS */
+.pill {
+  padding:6px 14px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  background:#2a2a3d;
+  color:white;
+}
+.pill:hover {
+  background:#3a3a55;
+}
+.pill.accent {
+  background:#4f46e5;
+}
+.pill.danger {
+  background:#ff6b6b;
+}
+.pill.strong {
+  background:#e11d48;
+}
+
+/* STATUS MENU */
+.status-wrapper {
+  position:relative;
+}
+.status-menu {
+  position:absolute;
+  right:0;
+  top:26px;
+  background:#1e1e1e;
+  border-radius:8px;
+  padding:6px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+}
+.status-item {
+  padding:6px 10px;
+  cursor:pointer;
+  border-radius:6px;
+}
+.status-item:hover {
+  background:#2a2a2a;
+}
+.status-item.active {
+  background:#4f46e5;
+}
+
+.notification-icon {
+  position: relative;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff4d4f;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 999px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  opacity: 0.7;
+}
+
+.modal-content {
+  background: #fff;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-section {
+  margin-top: 16px;
+}
+
+.modal-section h3 {
+  margin-bottom: 8px;
+}
+
+.search-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+.search-modal.active {
+  display: flex;
+}
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+}
+
+/* Modal */
+.friend-modal {
+  background: #1e1e1e;
+  width: 380px;
+  max-height: 480px;
+  border-radius: 12px;
+  padding: 16px;
+  color: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Title */
+.friend-modal h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Tabs */
+.friend-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: #2a2a2a;
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+}
+
+.tab-btn:hover {
+  background: #333;
+}
+
+/* Badge */
+.badge {
+  background: crimson;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Content */
+.friend-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* List */
+.friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Friend item */
+.friend-item {
+  background: #2a2a2a;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.accept {
+  background: #4caf50;
+}
+
+.decline {
+  background: #e53935;
+}
+
+.cancel {
+  background: #ff9800;
+}
+
+.accept, .decline, .cancel {
+  border: none;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.accept:hover { background: #43a047; }
+.decline:hover { background: #d32f2f; }
+.cancel:hover { background: #fb8c00; }
+
+/* ===================== */
+/* LOGOUT LOADING MODAL */
+/* ===================== */
+
+.logout-text {
+  font-size: 20px;
+  font-weight: bold;
+  animation: logoutWiggle 0.6s infinite;
+}
+
+@keyframes logoutWiggle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(1deg); }
+  50%  { transform: rotate(0deg); }
+  75%  { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ICON BAR -->
+  <div class="icon-bar">
+    <div class="icon" onclick="openMainMenu()">※</div>
+    <div class="icon" onclick="showHome()">🏠</div>
+    <div class="icon" onclick="openSearch()">🔍</div>
+    <div class="icon notification-icon" onclick="showNotifications()">
+  🔔
+  <span id="notifBadge" class="notif-badge hidden">0</span>
+</div>
+    <div class="icon" onclick="openPanel('messages')">💬</div>
+    <div class="icon" onclick="openPanel('friends')">👥</div>
+    <div class="icon" onclick="openPanel('games')">🎮</div>
+    <div class="icon profile-icon bottom" onclick="toggleProfileMenu()">👤</div>
+  </div>
+
+  <!-- PROFILE DROPDOWN MENU -->
+  <div id="profileMenu" class="profile-menu hidden">
+    <div class="pm-name" onclick="openProfileFromMenu()">
+      <strong>Bryan Gutierrez Ablao</strong><br>
+      <span>@bryan.ablao</span>
+    </div>
+    <hr>
+    <div class="pm-item" onclick="openSettingsFromMenu()">⚙️ Settings</div>
+    <hr>
+    <div class="pm-item" onclick="openHelp()">❓ Help</div>
+    <div class="pm-item danger" onclick="openLogout()">🚪 Log Out</div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="panel" id="sidePanel">
+    <div class="panel-header" id="panelTitle"></div>
+    <div class="panel-content" id="panelContent"></div>
+  </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="mainContent">
+      <h1>Welcome back 👋</h1>
+      <p>This is your Asterism homepage.</p>
+
+  <!-- FOOTER -->
+  <footer style="
+    margin-top:60px;
+    font-size:13px;
+    color:#888;
+    text-align:center;
+  ">
+    © 2026 Asterism ※ · All rights reserved ·
+    <a href="terms.html" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
+    <p style="margin-top:10px;">
+      Questions? Contact us at
+      <a href="mailto:support@asterism.com" style="color:#aaa;">
+        support@asterism.com
+      </a>
+    </p>
+  </footer>
+ </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal">
+  <div class="modal-box">
+    <h3>Search Users</h3>
+    <input type="text" placeholder="Username or User ID">
+  </div>
+</div>
+
+<script>
+const panel = document.getElementById("sidePanel");
+const title = document.getElementById("panelTitle");
+const content = document.getElementById("panelContent");
+const main = document.getElementById("mainContent");
+const DEFAULT_TAGS = ["#Newbie", "#Gamer", "#Friendly", "#Amazed"];
+
+function openPanel(type) {
+  if (panel.classList.contains("active") && title.textContent.toLowerCase() === type) {
+    panel.classList.remove("active");
+    return;
+  }
+
+  panel.classList.add("active");
+
+  const data = {
+    notifications: "No new notifications.",
+    messages: "Recent conversations will appear here.",
+    friends: "Online / Offline friends list.",
+    games: "Available games list.",
+    settings: "Settings options go here.",
+    profile: "Full profile details, bio, posts."
+  };
+
+  title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+  content.textContent = data[type];
+}
+
+function openSearch() {
+  document.getElementById("searchModal").classList.add("active");
+}
+
+function closeSidePanel() {
+  panel.classList.remove("active");
+}
+
+function openMainMenu() {
+  if (panel.classList.contains("active") && title.textContent.includes("※")) {
+    panel.classList.remove("active");
+    return;
+  }
+
+  panel.classList.add("active");
+  title.innerHTML = "<h1 style='margin:0;'>※</h1>";
+
+  content.innerHTML = `
+    <div class="card" onclick="showHome(); closeSidePanel()">Home</div>
+    <div class="card" onclick="showProfile(); closeSidePanel()">Profile</div>
+    <div class="card" onclick="showNotifications()">Notification</div>
+    <div class="card" onclick="showMessages()">Message</div>
+    <div class="card" onclick="showFriendList()">FriendList</div>
+    <div class="card" onclick="showGames()">Games</div>
+    <div class="card" onclick="openSettingsFromMenu(); closeSidePanel()">Settings</div>
+    <div class="card" onclick="openHelp(); closeSidePanel()">Help</div>
+    <div class="card" style="color:#ff6b6b;" onclick="openLogout()">Log Out</div>
+  `;
+}
+
+function showNotifications() {
+  unreadNotificationCount = 0;
+  updateNotificationBadge();
+
+  closeSidePanel();
+  renderMain(`
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <h1 style="margin:0;">Notifications</h1>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <input
+          type="text"
+          placeholder="Search notifications..."
+          style="width:220px;"
+          oninput="filterNotifications(this.value)"
+        />
+        <button class="btn secondary" onclick="markAllNotificationsRead()">
+          Mark all read
+        </button>
+      </div>
+    </div>
+    <div id="notificationList" style="margin-top:20px;">
+      <div class="card notification unread">
+        🔔 New friend request
+      </div>
+      <div class="card notification unread">
+        💬 You received a new message
+      </div>
+      <div class="card notification">
+        🎮 Game invite accepted
+      </div>
+    </div>
+  `);
+}
+
+function markAllNotificationsRead() {
+  document
+    .querySelectorAll(".notification")
+    .forEach(n => n.classList.remove("unread"));
+}
+
+function filterNotifications(query) {
+  query = query.toLowerCase();
+  document.querySelectorAll(".notification").forEach(n => {
+    n.style.display = n.textContent.toLowerCase().includes(query)
+      ? "block"
+      : "none";
+  });
+}
+
+let currentMessageCategory = "Inbox";
+let userStatus = "Online";
+
+let unreadNotificationCount = 2; // example value
+
+function updateNotificationBadge() {
+  const badge = document.getElementById("notifBadge");
+
+  if (unreadNotificationCount > 0) {
+    badge.textContent = unreadNotificationCount;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+}
+
+function receiveNewNotification(text) {
+  unreadNotificationCount++;
+  updateNotificationBadge();
+}
+
+function showMessages() {
+  closeSidePanel();
+  currentMessageCategory = "Inbox";
+
+  renderMain(`
+    <!-- HEADER -->
+    <div class="msg-header">
+      <h1>Messages</h1>
+
+      <div class="msg-header-right">
+        <input
+          class="msg-search"
+          placeholder="Search messages..."
+          oninput="filterMessages(this.value)"
+        />
+
+        <div class="status-wrapper">
+          <span class="status-icon" onclick="toggleStatusMenu()">⚙️</span>
+          <div id="statusMenu" class="status-menu hidden">
+            ${["Online","Offline","Do Not Disturb"].map(s => `
+              <div class="status-item ${userStatus===s?"active":""}"
+                onclick="setStatus('${s}')">${s}</div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div id="messageToolbar" class="msg-toolbar"></div>
+
+    <!-- CATEGORIES -->
+    <div class="tabs msg-tabs">
+      ${["Inbox","Favorites","Drafts","Sent","GroupChat","Archived","Deleted"]
+        .map(cat =>
+          `<div class="tab ${cat==="Inbox"?"active":""}"
+            onclick="switchMessageCategory(this,'${cat}')">${cat}</div>`
+        ).join("")}
+    </div>
+
+    <!-- MESSAGE LIST -->
+    <div id="messageList" class="msg-list"></div>
+  `);
+
+  renderMessages();
+  renderMessageToolbar();
+}
+
+function renderMessages() {
+  const list = document.getElementById("messageList");
+
+  list.innerHTML = `
+    ${[1,2,3,4].map(i => `
+      <div class="msg-item unread" onclick="toggleMessageSelect(this)">
+        <div class="msg-title">${currentMessageCategory} message ${i}</div>
+        <div class="msg-preview">This is a short preview of the message...</div>
+      </div>
+    `).join("")}
+  `;
+}
+
+function toggleMessageSelect(el) {
+  el.classList.toggle("selected");
+}
+
+function switchMessageCategory(tab, category) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+
+  currentMessageCategory = category;
+  renderMessages();
+  renderMessageToolbar();
+}
+
+function renderMessageToolbar() {
+  const bar = document.getElementById("messageToolbar");
+
+  let actions = "";
+
+  if (["Inbox","GroupChat"].includes(currentMessageCategory)) {
+    actions = `
+      <button class="pill" onclick="markSelected('unread')">Unread</button>
+      <button class="pill" onclick="markSelected('read')">Read</button>
+      <button class="pill danger" onclick="deleteSelected()">Delete</button>
+    `;
+  }
+
+  else if (["Favorites","Drafts","Sent"].includes(currentMessageCategory)) {
+    actions = `<button class="pill danger" onclick="deleteSelected()">Delete</button>`;
+  }
+
+  else if (currentMessageCategory === "Archived") {
+    actions = `
+      <button class="pill accent" onclick="unarchiveSelected()">Unarchive</button>
+      <button class="pill danger" onclick="deleteSelected()">Delete</button>
+    `;
+  }
+
+  else if (currentMessageCategory === "Deleted") {
+    actions = `
+      <button class="pill danger strong"
+        onclick="permanentDeleteSelected()">Permanent Delete</button>
+      <button class="pill" onclick="restoreSelected()">Restore</button>
+    `;
+  }
+
+  bar.innerHTML = actions;
+}
+
+function getSelectedMessages() {
+  return [...document.querySelectorAll(".msg-item.selected")];
+}
+
+function markSelected(type) {
+  getSelectedMessages().forEach(m =>
+    m.classList.toggle("unread", type === "unread")
+  );
+}
+
+function deleteSelected() {
+  getSelectedMessages().forEach(m => m.remove());
+}
+
+function unarchiveSelected() {
+  alert("Moved to Inbox");
+}
+
+function restoreSelected() {
+  alert("Messages restored");
+}
+
+function permanentDeleteSelected() {
+  alert("Messages permanently deleted");
+}
+
+function filterMessages(query) {
+  query = query.toLowerCase();
+  document.querySelectorAll(".msg-item").forEach(m => {
+    m.style.display =
+      m.textContent.toLowerCase().includes(query)
+        ? "block"
+        : "none";
+  });
+}
+
+function toggleStatusMenu() {
+  document.getElementById("statusMenu").classList.toggle("hidden");
+}
+
+function setStatus(status) {
+  userStatus = status;
+  document.getElementById("statusMenu").classList.add("hidden");
+  showMessages(); // refresh UI
+}
+
+function showFriendList() {
+  closeSidePanel();
+  renderMain(`
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+     <h1>Friends</h1>
+     <button class="icon-btn" onclick="openFriendModal()">⚙️</button>
+    </div>
+    <div class="card">Online Friends</div>
+    <div class="card">Offline Friends</div>
+  `);
+}
+
+function openFriendModal() {
+  document.getElementById("friendModalOverlay").classList.remove("hidden");
+  hideAllLists();
+}
+
+function closeFriendModal() {
+  document.getElementById("friendModalOverlay").classList.add("hidden");
+}
+
+function hideAllLists() {
+  document.getElementById("incomingList").classList.add("hidden");
+  document.getElementById("sentList").classList.add("hidden");
+}
+
+function showRequests() {
+  hideAllLists();
+  document.getElementById("incomingList").classList.remove("hidden");
+}
+
+function showSent() {
+  hideAllLists();
+  document.getElementById("sentList").classList.remove("hidden");
+}
+
+/* Close when clicking outside */
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("friendModalOverlay")
+    .onclick = closeFriendModal;
+});
+
+function loadFriendRequests() {
+  // PEOPLE WHO ADDED YOU
+  const received = [
+    { id: "u1", name: "John Doe" },
+    { id: "u2", name: "Maria Cruz" }
+  ];
+
+  // PEOPLE YOU ADDED
+  const sent = [
+    { id: "u3", name: "Alex Tan" }
+  ];
+
+  document.getElementById("receivedRequestsList").innerHTML =
+    received.length
+      ? received.map(u => `
+        <div class="card">
+          ${u.name}
+          <div style="float:right;">
+            <button class="btn" onclick="acceptRequest('${u.id}')">Accept</button>
+            <button class="btn secondary" onclick="declineRequest('${u.id}')">Decline</button>
+          </div>
+        </div>
+      `).join("")
+      : "<p>No friend requests</p>";
+
+  document.getElementById("sentRequestsList").innerHTML =
+    sent.length
+      ? sent.map(u => `
+        <div class="card">
+          ${u.name}
+          <button class="btn secondary" onclick="cancelRequest('${u.id}')">
+            Cancel
+          </button>
+        </div>
+      `).join("")
+      : "<p>No sent requests</p>";
+}
+
+function acceptRequest(id) {
+  alert("Accepted request from " + id);
+}
+
+function declineRequest(id) {
+  alert("Declined request from " + id);
+}
+
+function cancelRequest(id) {
+  alert("Cancelled request to " + id);
+}
+
+function showGames() {
+  closeSidePanel();
+  renderMain(`
+    <h1>Games</h1>
+    <div class="card">🎯 Game 1</div>
+    <div class="card">🕹 Game 2</div>
+  `);
+}
+
+function openSettingsFromMenu() {
+  document.getElementById("profileMenu").classList.add("hidden");
+
+  renderMain(`
+    <h1>Settings</h1>
+    <p>Manage your account and security.</p>
+
+    <div class="card" onclick="openPasswordModal()">
+      <div class="card-title">🔐 Change Password</div>
+      <div class="card-desc">Update your password securely</div>
+    </div>
+
+    <div class="card" onclick="openEditProfileModal()">
+      <div class="card-title">👤 Edit Profile</div>
+      <div class="card-desc">Update personal information</div>
+    </div>
+
+    <div class="card" onclick="openBlockedUsersModal()">
+     <div class="card-title">🚫 Blocked Users</div>
+     <div class="card-desc">Manage users you’ve blocked</div>
+    </div>
+
+    <div class="card" onclick="openDeleteAccountModal()">
+     <div class="card-title" style="color:#ff6b6b;">🗑 Delete Account</div>
+     <div class="card-desc">Temporary or permanent deletion</div>
+    </div>
+
+  `);
+}
+
+function showProfile() {
+  renderMain(`
+    <!-- PROFILE WRAPPER -->
+    <div style="max-width:700px; margin:0 auto; text-align:center;">
+
+      <!-- AVATAR -->
+<div class="avatar-wrapper">
+  <div class="avatar" onclick="toggleAvatarMenu(event)">
+    <img id="avatarImg">
+  </div>
+
+  <div id="avatarMenu" class="avatar-menu">
+    <div onclick="viewProfilePhoto()">👁 View Profile Photo</div>
+    <div onclick="uploadProfilePhoto()">⬆ Upload Profile Photo</div>
+    <div onclick="removeProfilePhoto()">🗑 Remove Profile Photo</div>
+  </div>
+</div>
+
+<input id="avatarInput" type="file" hidden accept="image/*" onchange="uploadAvatar(event)">
+
+      <!-- FULL NAME -->
+      <h2 style="margin:10px 0; font-weight:700; color:#fff;">
+        Bryan Gutierrez Ablao
+      </h2>
+
+      <!-- BASIC INFO -->
+<div class="card profile-info">
+  <p><span>Birthdate:</span> January 1, 2000</p>
+  <p><span>Gender:</span> Male</p>
+  <p><span>Contact #:</span> +63 900 000 0000</p>
+  <p><span>Home Address:</span> Davao City, Philippines</p>
+  <p><span>Nationality:</span> Filipino</p>
+</div>
+
+      <!-- BIO and TAGS-->
+<div class="card" style="text-align:left; margin-top:20px;">
+
+<label class="bio-label">
+  Bio <span class="bio-hint">(Max 200 characters)</span>
+</label>
+<textarea
+  class="bio-textarea"
+  maxlength="200"
+  rows="3"
+  oninput="saveProfileState()"
+  onfocus="showBioHint(true)"
+  onblur="showBioHint(false)"
+>Explorer of ideas and digital worlds.</textarea>
+
+<button
+  class="btn secondary"
+  style="margin-top:8px; font-size:12px;"
+  onclick="resetBio()">
+  Reset Bio
+</button>
+
+  <div style="margin-top:18px;">
+    <label>Tags</label>
+    <div class="tags" style="margin-top:10px;">
+      <span class="tag" contenteditable oninput="protectHash(this)">#Newbie</span>
+      <span class="tag" contenteditable oninput="protectHash(this)">#Gamer</span>
+      <span class="tag" contenteditable oninput="protectHash(this)">#Amazed</span>
+      <span class="tag" contenteditable
+        onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag(this)}">
+      #AddTag
+      </span>
+
+    </div>
+  </div>
+
+</div>
+
+      <!-- POST / GALLERY -->
+      <div class="tabs" style="margin-top:30px;">
+        <div class="tab active" onclick="switchProfileTab(this, 'post')">Post</div>
+        <div class="tab" onclick="switchProfileTab(this, 'gallery')">Gallery</div>
+      </div>
+
+      <div class="card" id="profileContent" style="margin-top:15px;">
+        <p>Post content goes here...</p>
+      </div>
+
+      <!-- BACK TO TOP -->
+      <button
+        id="backToTop"
+        class="btn secondary hidden"
+        onclick="window.scrollTo({top:0, behavior:'smooth'})"
+        style="margin-top:30px;"
+      >
+        ⬆ Back to Top
+      </button>
+
+    </div>
+  `);
+
+setTimeout(loadProfileState, 0);
+}
+
+function switchProfileTab(tab, type) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+
+  const content = document.getElementById("profileContent");
+
+  if (type === "post") {
+    content.innerHTML = "<p>Post content goes here...</p>";
+  } else {
+    content.innerHTML = "<p>Gallery content goes here...</p>";
+  }
+}
+
+function viewProfilePhoto() {
+  const src = document.getElementById("avatarImg").src;
+  if (!src) {
+    alert("No profile photo uploaded.");
+    return;
+  }
+  openModal(`
+    <div style="display:flex; justify-content:center;">
+      <img src="${src}" style="width:300px; border-radius:12px;">
+    </div>
+  `);
+}
+
+function uploadProfilePhoto() {
+  document.getElementById("avatarInput").click();
+}
+
+function removeProfilePhoto() {
+  document.getElementById("avatarImg").src = "";
+}
+
+function toggleAvatarMenu(e) {
+  e.stopPropagation();
+  document.getElementById("avatarMenu").classList.toggle("show");
+}
+
+document.addEventListener("click", e => {
+  const menu = document.getElementById("avatarMenu");
+  if (!e.target.closest(".avatar-wrapper")) {
+    menu.classList.remove("show");
+  }
+});
+
+function addTag(el) {
+  const newTag = document.createElement("span");
+  newTag.className = "tag";
+  newTag.contentEditable = true;
+  newTag.textContent = "#NewTag";
+  el.parentElement.appendChild(newTag);
+  newTag.focus();
+}
+
+function protectHash(tag) {
+  if (!tag.textContent.startsWith("#")) {
+    tag.textContent = "#" + tag.textContent.replace(/#/g, "");
+    placeCaretAtEnd(tag);
+  }
+}
+
+function placeCaretAtEnd(el) {
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function renderMain(content) {
+  main.innerHTML = `
+    ${content}
+
+    <footer style="
+      margin-top:60px;
+      font-size:13px;
+      color:#888;
+      text-align:center;
+    ">
+      © 2026 Asterism ※ · All rights reserved ·
+      <a href="#" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
+      <p style="margin-top:10px;">
+        Questions? Contact us at
+        <a href="mailto:support@asterism.com" style="color:#aaa;">
+          support@asterism.com
+        </a>
+      </p>
+    </footer>
+  `;
+}
+
+window.addEventListener("scroll", () => {
+  const btn = document.getElementById("backToTop");
+  if (!btn) return;
+  btn.classList.toggle("hidden", window.scrollY < 300);
+});
+
+function enableEdit() {
+  document.querySelectorAll("input, textarea, select")
+    .forEach(el => el.disabled = false);
+}
+
+function saveProfile() {
+  document.querySelectorAll("input, textarea, select")
+    .forEach(el => el.disabled = true);
+
+  const msg = document.createElement("div");
+  msg.style.color = "#4ade80";
+  msg.textContent = "Profile updated successfully ✅";
+  main.prepend(msg);
+}
+
+function uploadAvatar(e) {
+  const img = document.getElementById("avatarImg");
+  img.src = URL.createObjectURL(e.target.files[0]);
+  saveProfileState();
+}
+
+function toggleProfileMenu() {
+  const menu = document.getElementById("profileMenu");
+  menu.classList.toggle("hidden");
+}
+
+function openPasswordModal() {
+  openModal(`
+    <h3>Change Password</h3>
+
+    <div class="modal-section">
+      <input type="password" placeholder="Current Password">
+      <input type="password" placeholder="New Password">
+      <input type="password" placeholder="Confirm New Password">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="savePassword()">Save</button>
+    </div>
+  `);
+}
+
+
+function savePassword() {
+  const status = document.getElementById("modalStatus");
+  status.style.color = "#ff6b6b";
+  status.textContent = "Please make sure passwords match and fields are filled.";
+
+  setTimeout(() => {
+    status.style.color = "#4ade80";
+    status.textContent = "Password updated successfully";
+    setTimeout(closeModal, 1500);
+  }, 1200);
+}
+
+function openEditProfileModal() {
+  openModal(`
+    <h3>Edit Profile</h3>
+
+    <div class="modal-section">
+      <input placeholder="First Name">
+      <input placeholder="Middle Name">
+      <input placeholder="Last Name">
+      <select>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+      <input type="date">
+      <input placeholder="Contact Number">
+      <input placeholder="Home Address">
+      <input placeholder="Nationality">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="saveProfileModal()">Save</button>
+    </div>
+  `);
+}
+
+function saveProfileModal() {
+  const status = document.getElementById("modalStatus");
+  status.style.color = "#4ade80";
+  status.textContent = "Profile updated successfully";
+
+  setTimeout(closeModal, 1500);
+}
+
+function lockHash(e, el) {
+  const sel = window.getSelection();
+  const pos = sel.anchorOffset;
+
+  // Prevent deleting the #
+  if (
+    (e.key === "Backspace" && pos <= 1) ||
+    (e.key === "Delete" && pos === 0)
+  ) {
+    e.preventDefault();
+  }
+
+  // Prevent Enter creating new line
+  if (e.key === "Enter") {
+    e.preventDefault();
+  }
+}
+
+function resetBio() {
+  // Reset bio
+  const bio = document.querySelector(".bio-textarea");
+  if (bio) bio.value = "";
+
+  // Reset tags
+  const tagsWrap = document.querySelector(".tags");
+  tagsWrap.innerHTML = "";
+
+  DEFAULT_TAGS.forEach(t => {
+    const span = document.createElement("span");
+    span.className = "tag";
+    span.contentEditable = true;
+    span.textContent = t;
+
+    span.oninput = () => protectHash(span);
+    span.onkeydown = e => lockHash(e, span);
+
+    tagsWrap.appendChild(span);
+  });
+
+  // Save immediately
+  saveProfileState();
+}
+
+function openLogout() {
+  // Lock the modal (no close)
+  document.getElementById("modalOverlay").onclick = null;
+
+  openModal(`
+    <div style="text-align:center;">
+      <div class="logout-text">
+        Logging Out<span id="logoutDots">.</span>
+      </div>
+      <p style="margin-top:10px;">Please wait</p>
+    </div>
+  `);
+
+  // Disable background clicks
+  document.body.style.pointerEvents = "none";
+  document.getElementById("modalOverlay").style.pointerEvents = "all";
+
+  // Animated dots
+  let dots = 1;
+  const dotsEl = document.getElementById("logoutDots");
+
+  const dotInterval = setInterval(() => {
+    dots = (dots % 3) + 1;
+    dotsEl.textContent = ".".repeat(dots);
+  }, 500);
+
+  // Redirect after 7 seconds
+  setTimeout(() => {
+    clearInterval(dotInterval);
+    window.location.href = "https://example.com"; // 🔁 change later
+  }, 7000);
+}
+
+function openModal(html) {
+  document.getElementById("modalContent").innerHTML = html;
+  document.getElementById("modalOverlay").classList.remove("hidden");
+}
+
+function closeModal(e) {
+  document.getElementById("modalOverlay").classList.add("hidden");
+}
+
+const profileMenu = document.getElementById("profileMenu");
+
+function showHome() {
+  panel.classList.remove("active");
+
+  renderMain(`
+    <h1>Welcome back 👋</h1>
+    <p>This is your Asterism homepage.</p>
+  `);
+}
+
+function openProfileFromMenu() {
+  document.getElementById("profileMenu").classList.add("hidden");
+  panel.classList.remove("active");
+  showProfile();
+}
+
+function openHelp() {
+  renderMain(`
+    <h1>Help & Support</h1>
+
+    <div class="help-container">
+      <div class="help-header">
+        <strong>Bot Raphael</strong>
+        <span class="status">Online</span>
+      </div>
+
+      <div id="chatArea" class="chat-area"></div>
+    </div>
+  `);
+  resetHelpBot();
+}
+
+let helpSelectCount = 0;
+const HELP_LIMIT = 5;
+
+const HELP_DATA = {
+  "Account & Profile": {
+    "How can I edit my profile information?":
+      "You may edit your profile information by navigating to Settings and selecting Edit Profile.",
+    "How can I change my full name?":
+      "To update your full name, please go to Settings, select Edit Profile, and modify the name fields accordingly.",
+    "How can I update my gender?":
+      "Your gender information can be updated under Settings → Edit Profile in the Gender section.",
+    "How can I change my birthdate?":
+      "You may update your birthdate by visiting Settings and selecting Edit Profile.",
+    "How can I update my contact number?":
+      "Your contact number can be modified through Settings → Edit Profile.",
+    "How can I change my home address or nationality?":
+      "You may update your home address and nationality by going to Settings → Edit Profile."
+  },
+
+  "Profile Photo": {
+    "How do I upload a profile photo?":
+      "To upload a profile photo, open your profile, click on your avatar, and select Upload Profile Photo.",
+    "How do I remove my profile photo?":
+      "To remove your profile photo, click on your avatar and choose Remove Profile Photo.",
+    "Which image formats are supported?":
+      "Supported image formats include JPG, PNG, and WEBP."
+  },
+
+  "Bio & Tags": {
+    "How can I edit my bio?":
+      "You can update your bio by visiting your profile and editing the Bio section.",
+    "What is the maximum length of the bio?":
+      "Your bio may contain up to 200 characters.",
+    "How can I add or remove tags?":
+      "Tags can be added by selecting #AddTag or edited directly by clicking on existing tags."
+  },
+
+  "Security": {
+    "How can I change my password?":
+      "To change your password, please navigate to Settings and select Change Password.",
+    "What should I do if I forget my password?":
+      "Password recovery assistance is available through our email support."
+  },
+
+  "Account Control": {
+    "How can I temporarily disable my account?":
+      "You may temporarily disable your account by navigating to Settings → Delete Account → Temporary Disable.",
+    "How can I permanently delete my account?":
+      "Permanent account deletion can be completed via Settings → Delete Account → Permanently Delete Account."
+  },
+
+  "Privacy & Legal": {
+    "Does this platform have a Privacy Policy and Terms of Service?":
+      "Yes. You may review our Privacy Policy and Terms of Service by selecting the Terms & Privacy link at the bottom of the page."
+  },
+
+  "Support": {
+    "How can I contact live customer support?":
+      "You may contact our support team at any time via email at support@asterism.com. Our support service is available 24/7.",
+    "Is this chat operated by a real person or an automated system?":
+    "This chat is powered by an automated support assistant designed to provide immediate answers. For live human assistance, please contact our support team via email."
+  },
+
+  "General": {
+    "What is Asterism?":
+      "Asterism is a digital platform designed to connect ideas and foster curiosity.",
+    "Is Asterism free to use?":
+      "Yes, Asterism is currently available for free."
+  }
+};
+
+function resetHelpBot() {
+  helpSelectCount = 0;
+  const chat = document.getElementById("chatArea");
+  chat.innerHTML = "";
+  botMessage("Hello 👋 How can I help you today?");
+  showCategories();
+}
+
+function showCategories() {
+  if (helpSelectCount >= HELP_LIMIT) {
+    botMessage(
+      "You reached your limit choosing questions. You can come back later or refresh and ask again."
+    );
+    return;
+  }
+
+  helpSelectCount++;
+
+  const chat = document.getElementById("chatArea");
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.flexWrap = "wrap";
+  wrap.style.gap = "8px";
+
+  Object.keys(HELP_DATA).forEach(cat => {
+    const btn = document.createElement("span");
+    btn.className = "tag";
+    btn.textContent = cat;
+    btn.onclick = () => selectCategory(cat);
+    wrap.appendChild(btn);
+  });
+
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function selectCategory(category) {
+  userMessage(category);
+
+  setTimeout(() => {
+    const chat = document.getElementById("chatArea");
+    const wrap = document.createElement("div");
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+    wrap.style.gap = "8px";
+
+    Object.keys(HELP_DATA[category]).forEach(q => {
+      const btn = document.createElement("span");
+      btn.className = "tag";
+      btn.textContent = q;
+      btn.onclick = () => answerQuestion(category, q);
+      wrap.appendChild(btn);
+    });
+
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+  }, typingDelay());
+}
+
+function typingDelay() {
+  return Math.floor(Math.random() * 1000) + 2000; // 2–3 seconds
+}
+
+function answerQuestion(category, question) {
+  userMessage(question);
+
+  typingIndicator(() => {
+    botMessage(
+      HELP_DATA[category][question] +
+      "<br><br>Did my answer satisfy you?"
+    );
+    showSatisfactionOptions();
+  });
+}
+
+function showSatisfactionOptions() {
+  const chat = document.getElementById("chatArea");
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.gap = "10px";
+
+  ["Yes", "Maybe", "Ask another question"].forEach(opt => {
+    const btn = document.createElement("span");
+    btn.className = "tag";
+    btn.textContent = opt;
+    btn.onclick = () => handleSatisfaction(opt);
+    wrap.appendChild(btn);
+  });
+
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function handleSatisfaction(choice) {
+  userMessage(choice);
+
+  typingIndicator(() => {
+    if (choice === "Yes") {
+      botMessage(
+        "Thank you! I really appreciate it 😊 Is there anything else I can help you with?"
+      );
+      showYesNo();
+    } else {
+      botMessage("No worries! Please choose another question.");
+      showCategories();
+    }
+  });
+}
+
+function showYesNo() {
+  const chat = document.getElementById("chatArea");
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.gap = "10px";
+
+  ["Yes, ask again", "No"].forEach(opt => {
+    const btn = document.createElement("span");
+    btn.className = "tag";
+    btn.textContent = opt;
+    btn.onclick = () => {
+      userMessage(opt);
+      typingIndicator(() => {
+        if (opt.startsWith("Yes")) {
+          showCategories();
+        } else {
+          botMessage("I’m glad I could help you. Bye bye 👋");
+        }
+      });
+    };
+    wrap.appendChild(btn);
+  });
+
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function userMessage(text) {
+  const chat = document.getElementById("chatArea");
+  chat.innerHTML += `
+    <div class="msg user">
+      <div class="bubble">${text}</div>
+    </div>
+  `;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function botMessage(text) {
+  const chat = document.getElementById("chatArea");
+  chat.innerHTML += `
+    <div class="msg bot">
+      <div class="name">Bot Raphael</div>
+      <div class="bubble">${text}</div>
+    </div>
+  `;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function typingIndicator(cb) {
+  const chat = document.getElementById("chatArea");
+
+  const typing = document.createElement("div");
+  typing.className = "typing";
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  const text = "Bot Raphael is typing...";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    typing.textContent += text.charAt(i);
+    i++;
+    chat.scrollTop = chat.scrollHeight;
+
+    if (i >= text.length) {
+      clearInterval(interval);
+
+      setTimeout(() => {
+        typing.remove();
+        cb();
+      }, 500); // small pause after typing finishes
+    }
+  }, 80); // speed per letter (ms)
+}
+
+function saveProfileState() {
+  localStorage.setItem("profileData", JSON.stringify({
+    avatar: document.getElementById("avatarImg")?.src || "",
+    bio: document.querySelector(".bio-textarea")?.value || "",
+    tags: [...document.querySelectorAll(".tag")]
+      .map(t => t.textContent)
+  }));
+}
+
+function showBioHint(show) {
+  document.querySelector(".bio-hint").style.display = show ? "inline" : "none";
+}
+
+function openBlockedUsersModal() {
+  openModal(`
+    <h3>Blocked Users</h3>
+
+    <div class="modal-section" style="max-height:220px; overflow:auto;">
+      <div class="card">No blocked users yet.</div>
+      <!-- Future blocked users list here -->
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Close</button>
+    </div>
+  `);
+}
+
+function openDeleteAccountModal() {
+  openModal(`
+    <h3 style="color:#ff6b6b;">Delete Account</h3>
+
+    <div class="modal-section">
+      <button class="btn secondary" onclick="openTemporaryDeleteModal()">
+        ⏳ Temporarily Disable Account
+      </button>
+      <button class="btn" style="background:#ff6b6b;"
+        onclick="openPermanentDeleteModal()">
+        ❌ Permanently Delete Account
+      </button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  `);
+}
+
+function openTemporaryDeleteModal() {
+  openModal(`
+    <h3>Temporary Deactivation</h3>
+
+    <div class="modal-section">
+      <select>
+        <option>7 days</option>
+        <option>14 days</option>
+        <option>30 days</option>
+        <option>Custom date</option>
+      </select>
+      <p class="card-desc">
+        Your account will be hidden until reactivation.
+      </p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn">Confirm</button>
+    </div>
+  `);
+}
+
+function openPermanentDeleteModal() {
+  openModal(`
+    <h3 style="color:#ff6b6b;">Permanently Deleting Account</h3>
+    <p id="deletePercent">0%</p>
+
+    <div class="progress-bar">
+      <div id="deleteProgress" class="progress-fill"></div>
+    </div>
+  `);
+
+  let progress = 0;
+  const bar = document.getElementById("deleteProgress");
+  const text = document.getElementById("deletePercent");
+
+  const interval = setInterval(() => {
+    progress += 5;
+    bar.style.width = progress + "%";
+    text.textContent = progress + "%";
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      text.textContent = "Account Deleted";
+    }
+  }, 150);
+}
+
+document.addEventListener("click", e => {
+  if (
+    !e.target.closest(".profile-icon") &&
+    !e.target.closest("#profileMenu")
+  ) {
+    profileMenu.classList.add("hidden");
+  }
+});
+
+function loadProfileState() {
+  const data = JSON.parse(localStorage.getItem("profileData"));
+  if (!data) return;
+
+  if (data.avatar) {
+    document.getElementById("avatarImg").src = data.avatar;
+  }
+
+  if (data.bio) {
+    document.querySelector(".bio-textarea").value = data.bio;
+  }
+
+  const tagsWrap = document.querySelector(".tags");
+  if (!tagsWrap) return;
+
+  // ✅ IF saved tags exist → load them
+  if (data.tags && data.tags.length) {
+    tagsWrap.innerHTML = "";
+
+    data.tags.forEach(t => {
+      const span = document.createElement("span");
+      span.className = "tag";
+      span.contentEditable = true;
+      span.textContent = t;
+      span.oninput = () => protectHash(span);
+      span.onkeydown = e => lockHash(e, span);
+      tagsWrap.appendChild(span);
+    });
+
+  // ✅ ELSE → reset to default tags
+  } else {
+    tagsWrap.innerHTML = "";
+
+    DEFAULT_TAGS.forEach(t => {
+      const span = document.createElement("span");
+      span.className = "tag";
+      span.contentEditable = true;
+      span.textContent = t;
+      span.oninput = () => protectHash(span);
+      span.onkeydown = e => lockHash(e, span);
+      tagsWrap.appendChild(span);
+    });
+  }
+}
+
+document.getElementById("searchModal").addEventListener("click", e => {
+  if (e.target.id === "searchModal") {
+    e.target.classList.remove("active");
+  }
+});
+
+document.addEventListener("click", e => {
+  const panel = document.getElementById("sidePanel");
+  const iconBar = document.querySelector(".icon-bar");
+
+  if (
+    panel.classList.contains("active") &&
+    !e.target.closest("#sidePanel") &&
+    !e.target.closest(".icon-bar")
+  ) {
+    panel.classList.remove("active");
+  }
+});
+
+document.addEventListener("click", e => {
+  const menu = document.getElementById("statusMenu");
+  if (!menu) return;
+
+  if (!e.target.closest(".status-wrapper")) {
+    menu.classList.add("hidden");
+  }
+});
+
+</script>
+
+<!-- Overlay -->
+<div id="friendModalOverlay" class="modal-overlay hidden">
+  <div class="friend-modal" onclick="event.stopPropagation()">
+
+    <h2>Friends</h2>
+
+    <!-- Tabs -->
+    <div class="friend-tabs">
+      <button class="tab-btn" onclick="showRequests()">
+        Friend Requests
+        <span id="requestBadge" class="badge">2</span>
+      </button>
+
+      <button class="tab-btn" onclick="showSent()">
+        Sent Requests
+        <span id="sentBadge" class="badge">1</span>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="friend-content">
+
+      <!-- Incoming -->
+      <div id="incomingList" class="friend-list hidden">
+        <div class="friend-item">
+          <span>John Doe</span>
+          <div class="actions">
+            <button class="accept">Accept</button>
+            <button class="decline">Decline</button>
+          </div>
+        </div>
+
+        <div class="friend-item">
+          <span>Maria Cruz</span>
+          <div class="actions">
+            <button class="accept">Accept</button>
+            <button class="decline">Decline</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sent -->
+      <div id="sentList" class="friend-list hidden">
+        <div class="friend-item">
+          <span>Alex Tan</span>
+          <button class="cancel">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="modalOverlay" class="system-modal hidden" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div id="modalContent"></div>
+    <div id="modalStatus" class="card-desc"></div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
