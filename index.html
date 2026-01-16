@@ -367,7 +367,7 @@ footer a:hover { text-decoration: underline; }
     <a href="terms.html" class="footer-link">Terms &amp; Privacy</a>
     <p style="margin-top:10px;">
       Questions? Contact us at
-      <a href="mailto:support@asterism.com">support@asterism.com</a>
+      <a href="mailto:accxs.asterism@gmail.com">accxs.asterism@gmail.com</a>
     </p>
   </footer>
  </div>
@@ -439,7 +439,31 @@ registerFields.forEach(field => {
   field.addEventListener("keydown", handleRegisterEnter);
 });
 
-
 </script>
+
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
+    authDomain: "chat-app-5d7eb.firebaseapp.com",
+    projectId: "chat-app-5d7eb",
+    storageBucket: "chat-app-5d7eb.firebasestorage.app",
+    messagingSenderId: "1073056096498",
+    appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  // make available globally
+  window.auth = getAuth(app);
+  window.db = getFirestore(app);
+</script>
+
 </body>
 </html>
