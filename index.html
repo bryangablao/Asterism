@@ -396,7 +396,23 @@ document.getElementById("registerBtn").addEventListener("click", () => {
       return;
     }
   }
-  statusMsg.textContent = "Registration ready (backend not connected).";
+const email =
+  registerBox.querySelector('input[name="username"]').value +
+  "@asterism.com";
+
+const password = registerBox.querySelector('input[name="register_password"]').value;
+
+const userData = {
+  firstName: registerBox.querySelector('input[name="first_name"]').value,
+  lastName: registerBox.querySelector('input[name="last_name"]').value,
+  middleName: registerBox.querySelector('input[name="middle_name"]').value,
+  contact: registerBox.querySelector('input[name="contact_number"]').value,
+  country: registerBox.querySelector('select[name="country"]').value,
+  gender: registerBox.querySelector('select[name="gender"]').value,
+  birthdate: registerBox.querySelector('input[name="birthdate"]').value
+};
+
+register(email, password, userData);
 });
 document.getElementById("loginBtn").addEventListener("click", () => {
   const email = loginBox.querySelector('input[type="email"]');
@@ -405,7 +421,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     statusMsg.textContent = "Please fill in email and password before signing in.";
     return;
   }
-  statusMsg.textContent = "Login ready (backend not connected).";
+  login(email.value, password.value);
 });
 
 const loginBtn = document.getElementById("loginBtn");
@@ -444,11 +460,23 @@ registerFields.forEach(field => {
 <script type="module">
   import { initializeApp } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth } from
+
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword
+  } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  import { getFirestore } from
+
+  import {
+    getFirestore,
+    setDoc,
+    doc,
+    serverTimestamp
+  } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+  // 🔐 Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
     authDomain: "chat-app-5d7eb.firebaseapp.com",
@@ -458,12 +486,49 @@ registerFields.forEach(field => {
     appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
   };
 
+  // 🔥 Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  // make available globally
-  window.auth = getAuth(app);
-  window.db = getFirestore(app);
+  // =========================
+  // LOGIN FUNCTION
+  // =========================
+  window.login = function (email, password) {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        window.location.href = "home.html";
+      })
+      .catch(err => {
+        document.getElementById("statusMsg").textContent = err.message;
+      });
+  };
+
+  // =========================
+  // REGISTER FUNCTION
+  // =========================
+  window.register = function (email, password, userData) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCred => {
+        return setDoc(
+          doc(db, "users", userCred.user.uid),
+          {
+            ...userData,
+            email,
+            createdAt: serverTimestamp()
+          }
+        );
+      })
+      .then(() => {
+        document.getElementById("statusMsg").textContent =
+          "Account created! You can now log in.";
+      })
+      .catch(err => {
+        document.getElementById("statusMsg").textContent = err.message;
+      });
+  };
 </script>
+
 
 </body>
 </html>
