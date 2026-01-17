@@ -886,8 +886,8 @@ input, textarea, select {
     <a href="terms.html" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
     <p style="margin-top:10px;">
       Questions? Contact us at
-      <a href="mailto:support@asterism.com" style="color:#aaa;">
-        support@asterism.com
+      <a href="mailto:accxs.asterism@gmail.com" style="color:#aaa;">
+        accxs.asterism@gmail.com
       </a>
     </p>
   </footer>
@@ -1500,8 +1500,8 @@ function renderMain(content) {
       <a href="#" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
       <p style="margin-top:10px;">
         Questions? Contact us at
-        <a href="mailto:support@asterism.com" style="color:#aaa;">
-          support@asterism.com
+        <a href="mailto:accxs.asterism@gmail.com" style="color:#aaa;">
+          accxs.asterism@gmail.com
         </a>
       </p>
     </footer>
@@ -1647,7 +1647,7 @@ function resetBio() {
 }
 
 function openLogout() {
-  // Lock the modal (no close)
+  // lock modal
   document.getElementById("modalOverlay").onclick = null;
 
   openModal(`
@@ -1659,23 +1659,23 @@ function openLogout() {
     </div>
   `);
 
-  // Disable background clicks
+  // disable background
   document.body.style.pointerEvents = "none";
   document.getElementById("modalOverlay").style.pointerEvents = "all";
 
-  // Animated dots
+  // animated dots
   let dots = 1;
   const dotsEl = document.getElementById("logoutDots");
-
   const dotInterval = setInterval(() => {
     dots = (dots % 3) + 1;
     dotsEl.textContent = ".".repeat(dots);
   }, 500);
 
-  // Redirect after 7 seconds
-  setTimeout(() => {
+  // 🔥 FIREBASE SIGN OUT
+  setTimeout(async () => {
     clearInterval(dotInterval);
-    window.location.href = "index.html"; // 🔁 change later
+    await signOut(auth);
+    window.location.href = "index.html";
   }, 7000);
 }
 
@@ -1779,7 +1779,7 @@ const HELP_DATA = {
 
   "Support": {
     "How can I contact live customer support?":
-      "You may contact our support team at any time via email at support@asterism.com. Our support service is available 24/7.",
+      "You may contact our support team at any time via email at accxs.asterism@gmail.com. Our support service is available 24/7.",
     "Is this chat operated by a real person or an automated system?":
     "This chat is powered by an automated support assistant designed to provide immediate answers. For live human assistance, please contact our support team via email."
   },
@@ -2217,6 +2217,44 @@ document.addEventListener("click", e => {
   </div>
 </div>
 
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
+    authDomain: "chat-app-5d7eb.firebaseapp.com",
+    projectId: "chat-app-5d7eb",
+    storageBucket: "chat-app-5d7eb.firebasestorage.app",
+    messagingSenderId: "1073056096498",
+    appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  // make available globally
+  window.auth = getAuth(app);
+  import { onAuthStateChanged, signOut } from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    // ❌ Not logged in → kick out
+    window.location.href = "index.html";
+  } else {
+    // ✅ Logged in
+    console.log("Logged in as:", user.email);
+  }
+});
+
+  window.db = getFirestore(app);
+</script>
+
+  
 </body>
 </html>
 
