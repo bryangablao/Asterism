@@ -1647,7 +1647,6 @@ function resetBio() {
 }
 
 function openLogout() {
-  // lock modal
   document.getElementById("modalOverlay").onclick = null;
 
   openModal(`
@@ -1659,11 +1658,9 @@ function openLogout() {
     </div>
   `);
 
-  // disable background
   document.body.style.pointerEvents = "none";
   document.getElementById("modalOverlay").style.pointerEvents = "all";
 
-  // animated dots
   let dots = 1;
   const dotsEl = document.getElementById("logoutDots");
   const dotInterval = setInterval(() => {
@@ -1671,12 +1668,12 @@ function openLogout() {
     dotsEl.textContent = ".".repeat(dots);
   }, 500);
 
-  // 🔥 FIREBASE SIGN OUT
   setTimeout(async () => {
-  clearInterval(dotInterval);
-  await window.firebaseSignOut(window.auth);
-  window.location.href = "index.html";
-}, 7000);
+    clearInterval(dotInterval);
+    await window.firebaseSignOut(window.auth);
+    window.location.href = "index.html";
+  }, 7000);
+}
 
 function openModal(html) {
   document.getElementById("modalContent").innerHTML = html;
