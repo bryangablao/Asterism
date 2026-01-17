@@ -941,28 +941,45 @@ input, textarea, select {
     <div class="panel-content" id="panelContent"></div>
   </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main" id="mainContent">
-      <h1>Welcome back 👋</h1>
-      <p>This is your Asterism homepage.</p>
+<!-- MAIN CONTENT -->
+<div class="main" id="mainContent">
 
-  <!-- FOOTER -->
-  <footer style="
-    margin-top:60px;
-    font-size:13px;
-    color:#888;
-    text-align:center;
-  ">
-    © 2026 Asterism ※ · All rights reserved ·
-    <a href="terms.html" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
-    <p style="margin-top:10px;">
+  <!-- 🔥 FIREBASE CHAT (HIDDEN BY DEFAULT) -->
+  <div id="firebaseChat" class="hidden">
+    <div style="display:flex; height:100%; gap:16px;">
+      <!-- USER LIST -->
+      <div style="width:260px; background:#1e1e1e; border-radius:12px; padding:12px; overflow-y:auto;">
+        <h3 style="margin-top:0;">Users</h3>
+        <div id="userList"></div>
+      </div>
+
+      <!-- CHAT AREA -->
+      <div style="flex:1; background:#14141d; border-radius:12px; display:flex; flex-direction:column;">
+        <div id="chatBox" style="flex:1; padding:16px; overflow-y:auto;"></div>
+        <div style="display:flex; gap:10px; padding:12px; border-top:1px solid #2a2a3d;">
+          <input id="msgInput" placeholder="Type a message…" />
+          <button class="btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ NORMAL PAGE CONTENT -->
+  <div id="pageContent">
+    <h1>Welcome back 👋</h1>
+    <p>This is your Asterism homepage.</p>
+
+    <footer style="margin-top:60px; font-size:13px; color:#888; text-align:center;">
+      © 2026 Asterism ※ · All rights reserved ·
+      <a href="terms.html" style="color:#aaa;">Terms & Privacy</a>
+      <p style="margin-top:10px;">
       Questions? Contact us at
       <a href="mailto:accxs.asterism@gmail.com" style="color:#aaa;">
         accxs.asterism@gmail.com
       </a>
     </p>
-  </footer>
- </div>
+    </footer>
+  </div>
 </div>
 
 <!-- SEARCH MODAL -->
@@ -1103,50 +1120,9 @@ function receiveNewNotification(text) {
 
 function showMessages() {
   closeSidePanel();
-  currentMessageCategory = "Inbox";
 
-  renderMain(`
-    <!-- HEADER -->
-    <div class="msg-header">
-      <h1>Messages</h1>
-
-      <div class="msg-header-right">
-        <input
-          class="msg-search"
-          placeholder="Search messages..."
-          oninput="filterMessages(this.value)"
-        />
-
-        <div class="status-wrapper">
-          <span class="status-icon" onclick="toggleStatusMenu()">⚙️</span>
-          <div id="statusMenu" class="status-menu hidden">
-            ${["Online","Offline","Do Not Disturb"].map(s => `
-              <div class="status-item ${userStatus===s?"active":""}"
-                onclick="setStatus('${s}')">${s}</div>
-            `).join("")}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TOOLBAR -->
-    <div id="messageToolbar" class="msg-toolbar"></div>
-
-    <!-- CATEGORIES -->
-    <div class="tabs msg-tabs">
-      ${["Inbox","Favorites","Drafts","Sent","GroupChat","Archived","Deleted"]
-        .map(cat =>
-          `<div class="tab ${cat==="Inbox"?"active":""}"
-            onclick="switchMessageCategory(this,'${cat}')">${cat}</div>`
-        ).join("")}
-    </div>
-
-    <!-- MESSAGE LIST -->
-    <div id="messageList" class="msg-list"></div>
-  `);
-
-  renderMessages();
-  renderMessageToolbar();
+  document.getElementById("pageContent").classList.add("hidden");
+  document.getElementById("firebaseChat").classList.remove("hidden");
 }
 
 function renderMessages() {
@@ -1257,6 +1233,7 @@ function setStatus(status) {
 }
 
 function showFriendList() {
+  document.getElementById("firebaseChat").classList.add("hidden");
   closeSidePanel();
   renderMain(`
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1350,6 +1327,7 @@ function cancelRequest(id) {
 }
 
 function showGames() {
+  document.getElementById("firebaseChat").classList.add("hidden");
   closeSidePanel();
   renderMain(`
     <h1>Games</h1>
@@ -1360,7 +1338,7 @@ function showGames() {
 
 function openSettingsFromMenu() {
   document.getElementById("profileMenu").classList.add("hidden");
-
+  document.getElementById("firebaseChat").classList.add("hidden");
   renderMain(`
     <h1>Settings</h1>
     <p>Manage your account and security.</p>
@@ -1389,6 +1367,7 @@ function openSettingsFromMenu() {
 }
 
 function showProfile() {
+document.getElementById("firebaseChat").classList.add("hidden");
   renderMain(`
     <!-- PROFILE WRAPPER -->
     <div style="max-width:700px; margin:0 auto; text-align:center;">
@@ -1758,12 +1737,8 @@ function closeModal(e) {
 const profileMenu = document.getElementById("profileMenu");
 
 function showHome() {
-  panel.classList.remove("active");
-
-  renderMain(`
-    <h1>Welcome back 👋</h1>
-    <p>This is your Asterism homepage.</p>
-  `);
+  document.getElementById("firebaseChat").classList.add("hidden");
+  document.getElementById("pageContent").classList.remove("hidden");
 }
 
 function openProfileFromMenu() {
@@ -2287,15 +2262,28 @@ document.addEventListener("click", e => {
 <script type="module">
   import { initializeApp } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { doc, setDoc } from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
   import {
     getAuth,
     onAuthStateChanged,
     signOut
   } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  import { getFirestore } from
+
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    query,
+    orderBy,
+    onSnapshot,
+    serverTimestamp
+  } from
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+  // 🔐 FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
     authDomain: "chat-app-5d7eb.firebaseapp.com",
@@ -2305,22 +2293,127 @@ document.addEventListener("click", e => {
     appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
   };
 
+  // 🔥 INIT
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  // 🔥 MAKE FIREBASE GLOBAL
-  window.auth = getAuth(app);
-  window.db = getFirestore(app);
-  window.firebaseSignOut = signOut;
+  // 🌍 GLOBAL ACCESS
+  window.auth = auth;
+  window.db = db;
+
+  // 👤 CURRENT USER
+  let currentUser = null;
+  let activeChatId = null;
 
   // 🔒 AUTH GUARD
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async user => {
     if (!user) {
       window.location.href = "index.html";
     } else {
+      currentUser = user;
+
+await setDoc(
+  doc(db, "users", user.uid),
+  {
+    firstName: user.displayName || user.email.split("@")[0],
+    email: user.email,
+    createdAt: serverTimestamp()
+  },
+  { merge: true }
+);
       console.log("Logged in as:", user.email);
+      loadUsers();
     }
   });
-</script>
+
+  // =========================
+  // 👥 LOAD USERS
+  // =========================
+  async function loadUsers() {
+    const userList = document.getElementById("userList");
+    if (!userList) return;
+
+    userList.innerHTML = "";
+    const snap = await getDocs(collection(db, "users"));
+
+    snap.forEach(doc => {
+      if (doc.id === currentUser.uid) return;
+
+      const div = document.createElement("div");
+      div.className = "card";
+      div.textContent = doc.data().firstName;
+      div.onclick = () => openChat(doc.id);
+      userList.appendChild(div);
+    });
+  }
+
+  let unsubscribeChat = null;
   
+  // =========================
+  // 💬 OPEN CHAT
+  // =========================
+  function openChat(otherUserId) {
+    activeChatId = [currentUser.uid, otherUserId].sort().join("_");
+    listenForMessages();
+  }
+
+  // =========================
+  // 📨 SEND MESSAGE
+  // =========================
+  window.sendMessage = async function () {
+    const input = document.getElementById("msgInput");
+    if (!input || !activeChatId) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    await addDoc(
+      collection(db, "messages", activeChatId, "items"),
+      {
+        senderId: currentUser.uid,
+        text,
+        createdAt: serverTimestamp()
+      }
+    );
+
+    input.value = "";
+  };
+
+  // =========================
+  // 🔴 REAL‑TIME LISTENER
+  // =========================
+  function listenForMessages() {
+  const chatBox = document.getElementById("chatBox");
+  if (!chatBox) return;
+
+  if (unsubscribeChat) unsubscribeChat(); // 🔥 stop old listener
+
+  const q = query(
+    collection(db, "messages", activeChatId, "items"),
+    orderBy("createdAt")
+  );
+
+  unsubscribeChat = onSnapshot(q, snap => {
+    chatBox.innerHTML = "";
+    snap.forEach(doc => {
+      const msg = document.createElement("div");
+      msg.className =
+        doc.data().senderId === currentUser.uid
+          ? "msg user"
+          : "msg bot";
+      msg.innerHTML = `<div class="bubble">${doc.data().text}</div>`;
+      chatBox.appendChild(msg);
+    });
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+}
+
+  // =========================
+  // 🚪 LOG OUT
+  // =========================
+  window.logout = () => signOut(auth);
+</script>
+
 </body>
 </html>
