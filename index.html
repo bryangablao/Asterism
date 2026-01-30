@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="icon" type="image/png" href="px/a/Asterism Logo.png" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="px/a/Asterism Logo.png">
 <title>※ - Log in or sign up</title>
 <style>
 :root {
@@ -53,10 +53,7 @@ body {
   transform: rotateY(180deg);
 }
 h1 { text-align: center; margin-bottom: 10px; }
-label {
-  font-size: 13px;
-  color: #aaa;
-}
+label { font-size: 13px; color: #aaa; }
 .container input,
 .container select {
   width: 100%;
@@ -66,30 +63,20 @@ label {
   border: none;
   border-radius: 5px;
   outline: none;
-  color: var(--input-active); /* USER-TYPED TEXT */
+  color: var(--input-active);
   font-size: 14px;
 }
-.container input::placeholder {
-  color: var(--input-text);
-}
-.container select {
-  color: var(--input-text);
-}
-.container select:valid {
-  color: var(--input-active);
-}
+.container input::placeholder { color: var(--input-text); }
+.container select { color: var(--input-text); }
+.container select:valid { color: var(--input-active); }
 .container .link {
   color: var(--input-text);
-}
-.container .link:hover {
-  color: var(--input-active);
-}
-.container .link {
   margin-top: 12px;
   text-align: center;
   cursor: pointer;
   font-size: 14px;
 }
+.container .link:hover { color: var(--input-active); }
 select {
   appearance: none;
   background-image:
@@ -100,12 +87,9 @@ select {
     calc(100% - 12px) calc(50% - 2px);
   background-size: 6px 6px;
   background-repeat: no-repeat;
-  padding-right: 32px; /* moves arrow slightly left */
+  padding-right: 32px;
 }
-/* Fix placeholder-like gray on some browsers */
-select option {
-  color: #000; /* dropdown list text */
-}
+select option { color: #000; }
 button {
   width: 100%;
   padding: 10px;
@@ -115,10 +99,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
-button:disabled {
-  background: #333;
-  cursor: not-allowed;
-}
+button:disabled { background: #333; cursor: not-allowed; }
 /* STATUS MESSAGE */
 .status {
   margin-top: 12px;
@@ -149,204 +130,113 @@ footer a {
 }
 footer a:hover { text-decoration: underline; }
 /* MOBILE */
-@media (max-width: 420px) {
-  .scene { width: 90%; }
-}
-.row {
-  display: flex;
-  gap: 10px;
-}
-.row > * {
-  flex: 1;
-}
-/* Stack on small screens */
-@media (max-width: 420px) {
-  .row {
-    flex-direction: column;
-  }
-}
-.row select,
-.row input[type="date"] {
-  height: 42px;
-}
+@media (max-width: 420px) { .scene { width: 90%; } }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+@media (max-width: 420px) { .row { flex-direction: column; } }
+.row select, .row input[type="date"] { height: 42px; }
 .email-group {
-  display: flex;
-  width: 100%;
-  height: 37px;
-  background: #2a2a3d;
-  border-radius: 5px;
-  overflow: hidden;
-  border: 1px solid transparent;
-  margin: 6px 0 10px;   /* 🔥 MATCH input spacing */
-  align-items: center;
+  display: flex; width: 100%; height: 37px; background: #2a2a3d;
+  border-radius: 5px; overflow: hidden; border: 1px solid transparent;
+  margin: 6px 0 10px; align-items: center;
 }
 .email-group input {
-  flex: 1;
-  height: 100%;
-  padding: 0 10px;        /* horizontal only */
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 14px;
-  line-height: normal;    /* RESET */
-  display: flex;          /* KEY FIX */
-  align-items: center;    /* TRUE vertical centering */
+  flex: 1; height: 100%; padding: 0 10px; background: transparent;
+  border: none; color: white; font-size: 14px; line-height: normal;
+  display: flex; align-items: center;
 }
 .email-suffix {
-  height: 100%;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  background: transparent;
-  color: var(--input-text);
-  font-size: 14px;
-  white-space: nowrap;
+  height: 100%; padding: 0 12px; display: flex; align-items: center;
+  background: transparent; color: var(--input-text); font-size: 14px; white-space: nowrap;
 }
-/* SINGLE unified focus border */
-.email-group:focus-within {
-  border-color: #ffffff;
-}
-.email-group:focus-within .email-suffix {
-  color: var(--input-active);
-}
-.container input[type="password"] {
-  margin-bottom: 16px;
-}
-
+.email-group:focus-within { border-color: #ffffff; }
+.email-group:focus-within .email-suffix { color: var(--input-active); }
+.container input[type="password"] { margin-bottom: 16px; }
 .register-subtitle {
-  text-align: center;
-  margin: 6px 0 18px;
-  font-size: 14px;
-  color: #cfcfe6;                 /* soft readable tone */
-  letter-spacing: 0.4px;
-  position: relative;
+  text-align: center; margin: 6px 0 18px; font-size: 14px;
+  color: #cfcfe6; letter-spacing: 0.4px; position: relative;
 }
-
-/* subtle divider effect */
 .register-subtitle::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    #4b5cff,
-    transparent
-  );
-  margin: 10px auto 0;
-  opacity: 0.8;
+  content: ""; display: block; width: 40px; height: 2px;
+  background: linear-gradient(to right, transparent, #4b5cff, transparent);
+  margin: 10px auto 0; opacity: 0.8;
 }
-
 .divider {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    #2a2a3d,
-    transparent
-  );
+  width: 100%; height: 1px;
+  background: linear-gradient(to right, transparent, #2a2a3d, transparent);
   margin: 40px 0 20px;
 }
-
 </style>
 </head>
 <body>
+
 <div class="page">
   <div class="auth-section">
     <div class="scene">
-      <div class="card" id="card">
-<!-- LOGIN -->
-<div class="container login" id="loginBox">
-  <h1>※ Login</h1>
-  <input
-    type="email"
-    name="email"
-    placeholder="Email"
-    autocomplete="username"
-    required
-  >
-  <input
-    type="password"
-    name="login_password"
-    placeholder="Password"
-    autocomplete="current-password"
-    required
-  >
-  <button id="loginBtn">Login</button>
-  <div class="link" onclick="flipCard()">Create an account</div>
-</div>
-<!-- REGISTER -->
-<div class="container register" id="registerBox">
-  <h1>※ Register</h1>
-    <p class="register-subtitle">
-      Join us – it’s fast and easy
-    </p>
-  <input type="text" name="first_name" placeholder="First Name" required>
-  <input type="text" name="last_name" placeholder="Last Name" required>
-  <input type="text" name="middle_name" placeholder="Middle Name" required>
-  <input
-    type="tel"
-    name="contact_number"
-    placeholder="Contact Number"
-    required
-  >
-  <select name="country" required>
-    <option value="" disabled selected>Nationality / Country</option>
-    <option>Philippines</option>
-    <option>United States</option>
-    <option>Japan</option>
-    <option>France</option>
-    <option>Mexico</option>
-    <option>Singapore</option>
-    <option>India</option>
-    <option>Thailand</option>
-    <option>China</option>
-    <option>South Korea</option>
-    <option>Australia</option>
-    <option>Switzerland</option>
-    <option>Other</option>
-  </select>
-  <div class="row">
-    <div>
-      <label>Gender</label>
-      <select name="gender" required>
-        <option value="" disabled selected>Select gender</option>
-        <option>Male</option>
-        <option>Female</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div>
-      <label>Birthdate</label>
-      <input type="date" name="birthdate" required>
-    </div>
-  </div>
-  <div class="email-group">
-    <input
-      type="email"
-      name="username"
-      placeholder="Email / Username"
-      autocomplete="username"
-      required
-    >
-    <div class="email-suffix">@asterism.com</div>
-  </div>
-  <input
-    type="password"
-    name="register_password"
-    placeholder="Password"
-    autocomplete="new-password"
-    required
-  >
-  <button id="registerBtn">Register</button>
-  <div class="link" onclick="flipCard()">⬅ Back to Sign In</div>
-</div>
+      <div class="card" id="card" style="height: 291px;">
+        
+        <!-- LOGIN -->
+        <div class="container login" id="loginBox">
+          <h1>※ Login</h1>
+          <input type="email" name="email" placeholder="Email" autocomplete="username" required>
+          <input type="password" name="login_password" placeholder="Password" autocomplete="current-password" required>
+          <button id="loginBtn">Login</button>
+          <div class="link" onclick="flipCard()">Create an account</div>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="container register" id="registerBox">
+          <h1>※ Register</h1>
+          <p class="register-subtitle">Join us – it’s fast and easy</p>
+          <input type="text" name="first_name" placeholder="First Name" required>
+          <input type="text" name="last_name" placeholder="Last Name" required>
+          <input type="text" name="middle_name" placeholder="Middle Name" required>
+          <input type="tel" name="contact_number" placeholder="Contact Number" required>
+          <select name="country" required>
+            <option value="" disabled selected>Nationality / Country</option>
+            <option>Philippines</option>
+            <option>United States</option>
+            <option>Japan</option>
+            <option>France</option>
+            <option>Mexico</option>
+            <option>Singapore</option>
+            <option>India</option>
+            <option>Thailand</option>
+            <option>China</option>
+            <option>South Korea</option>
+            <option>Australia</option>
+            <option>Switzerland</option>
+            <option>Other</option>
+          </select>
+          <div class="row">
+            <div>
+              <label>Gender</label>
+              <select name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Birthdate</label>
+              <input type="date" name="birthdate" required>
+            </div>
+          </div>
+          <div class="email-group">
+            <input type="email" name="username" placeholder="Email / Username" autocomplete="username" required>
+            <div class="email-suffix">@asterism.com</div>
+          </div>
+          <input type="password" name="register_password" placeholder="Password" autocomplete="new-password" required>
+          <button id="registerBtn">Register</button>
+          <div class="link" onclick="flipCard()">⬅ Back to Sign In</div>
+        </div>
+
       </div>
       <div class="status" id="statusMsg"></div>
     </div>
   </div>
+
   <div class="intro">
     <h2>Welcome to Asterism</h2>
     <p>
@@ -360,18 +250,18 @@ footer a:hover { text-decoration: underline; }
     </p>
   </div>
 
-<div class="divider"></div>
-  <!-- FOOTER -->
+  <div class="divider"></div>
+
   <footer>
     © 2026 Asterism ※ · All rights reserved ·
-    <a href="terms.html" class="footer-link">Terms &amp; Privacy</a>
+    <a href="terms.html" class="footer-link">Terms & Privacy</a>
     <p style="margin-top:10px;">
       Questions? Contact us at
       <a href="mailto:accxs.asterism@gmail.com">accxs.asterism@gmail.com</a>
     </p>
   </footer>
- </div>
 </div>
+
 <script>
 const card = document.getElementById("card");
 const loginBox = document.getElementById("loginBox");
@@ -382,153 +272,66 @@ function resizeCard() {
   const active = card.classList.contains("flip") ? registerBox : loginBox;
   card.style.height = active.offsetHeight + "px";
 }
+
 function flipCard() {
   card.classList.toggle("flip");
   statusMsg.textContent = "";
   setTimeout(resizeCard, 400);
 }
+
 resizeCard();
-document.getElementById("registerBtn").addEventListener("click", () => {
-  const inputs = registerBox.querySelectorAll("input, select");
-  for (let el of inputs) {
-    if (!el.value) {
-      statusMsg.textContent = "Please complete all required fields.";
-      return;
-    }
-  }
-const email =
-  registerBox.querySelector('input[name="username"]').value +
-  "@asterism.com";
 
-const password = registerBox.querySelector('input[name="register_password"]').value;
+// Dummy credentials
+const correctEmail = "test@asterism.com";
+const correctPassword = "123456";
 
-const userData = {
-  firstName: registerBox.querySelector('input[name="first_name"]').value,
-  lastName: registerBox.querySelector('input[name="last_name"]').value,
-  middleName: registerBox.querySelector('input[name="middle_name"]').value,
-  contact: registerBox.querySelector('input[name="contact_number"]').value,
-  country: registerBox.querySelector('select[name="country"]').value,
-  gender: registerBox.querySelector('select[name="gender"]').value,
-  birthdate: registerBox.querySelector('input[name="birthdate"]').value
-};
-
-register(email, password, userData);
-});
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const email = loginBox.querySelector('input[type="email"]');
-  const password = loginBox.querySelector('input[type="password"]');
-  if (!email.value || !password.value) {
-    statusMsg.textContent = "Please fill in email and password before signing in.";
-    return;
-  }
-  login(email.value, password.value);
-});
-
+// LOGIN
 const loginBtn = document.getElementById("loginBtn");
 const loginEmail = loginBox.querySelector('input[type="email"]');
 const loginPassword = loginBox.querySelector('input[type="password"]');
 
-function handleLoginEnter(e) {
-  if (e.key === "Enter") {
-    if (card.classList.contains("flip")) return; // prevent when Register is active
-    e.preventDefault();
-    loginBtn.click();
+function login(email, password) {
+  if(email === correctEmail && password === correctPassword) {
+    let countdown = 3;
+    const interval = setInterval(() => {
+      statusMsg.textContent = `✅ Login successful in ${countdown}..`;
+      countdown--;
+      if(countdown < 0) {
+        clearInterval(interval);
+        window.location.href = "home.html";
+      }
+    }, 1000);
+  } else {
+    statusMsg.textContent = "❌ Email/Password Incorrect, Please try again.";
   }
 }
 
-loginEmail.addEventListener("keydown", handleLoginEnter);
-loginPassword.addEventListener("keydown", handleLoginEnter);
-window.addEventListener("load", resizeCard);
+loginBtn.addEventListener("click", () => {
+  login(loginEmail.value, loginPassword.value);
+});
 
+loginEmail.addEventListener("keydown", e => { if(e.key==="Enter") login(loginEmail.value, loginPassword.value); });
+loginPassword.addEventListener("keydown", e => { if(e.key==="Enter") login(loginEmail.value, loginPassword.value); });
+
+// REGISTER
 const registerBtn = document.getElementById("registerBtn");
 const registerFields = registerBox.querySelectorAll("input, select");
 
-function handleRegisterEnter(e) {
-  if (e.key === "Enter") {
-    if (!card.classList.contains("flip")) return; // only when Register is active
-    e.preventDefault();
-    registerBtn.click();
+registerBtn.addEventListener("click", () => {
+  for(const el of registerFields) {
+    if(!el.value) {
+      statusMsg.textContent = "Please complete all required fields.";
+      return;
+    }
   }
-}
-
-registerFields.forEach(field => {
-  field.addEventListener("keydown", handleRegisterEnter);
+  statusMsg.textContent = "✅ Registration successful (not actually implemented).";
 });
 
+// Enter key for register
+registerFields.forEach(f => f.addEventListener("keydown", e => {
+  if(e.key === "Enter") registerBtn.click();
+}));
 </script>
-
-<script type="module">
-  import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
-  } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-  import {
-    getFirestore,
-    setDoc,
-    doc,
-    serverTimestamp
-  } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-  // 🔐 Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
-    authDomain: "chat-app-5d7eb.firebaseapp.com",
-    projectId: "chat-app-5d7eb",
-    storageBucket: "chat-app-5d7eb.firebasestorage.app",
-    messagingSenderId: "1073056096498",
-    appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
-  };
-
-  // 🔥 Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // =========================
-  // LOGIN FUNCTION
-  // =========================
-  window.login = function (email, password) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        window.location.href = "home.html";
-      })
-      .catch(err => {
-        document.getElementById("statusMsg").textContent = err.message;
-      });
-  };
-
-  // =========================
-  // REGISTER FUNCTION
-  // =========================
-  window.register = function (email, password, userData) {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(userCred => {
-        return setDoc(
-          doc(db, "users", userCred.user.uid),
-          {
-            ...userData,
-            email,
-            createdAt: serverTimestamp()
-          }
-        );
-      })
-      .then(() => {
-        document.getElementById("statusMsg").textContent =
-          "Account created! You can now log in.";
-      })
-      .catch(err => {
-        document.getElementById("statusMsg").textContent = err.message;
-      });
-  };
-</script>
-
 
 </body>
 </html>
