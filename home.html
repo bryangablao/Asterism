@@ -3,17 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="px/a/Asterism Logo.png" />
-<title>※ - Asterism</title>
+<link rel="icon" type="image/png" href="px/a/Asterism Logo.png">
+<title>※ Asterism</title>
 
 <style>
 
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
+/* ===================== */
+/* THEME VARIABLES       */
+/* ===================== */
 :root {
   --bg: #0f0f14;
   --panel: #1a1a25;
@@ -23,22 +20,27 @@ html, body {
   --muted: #9a9ab5;
 }
 
+/* ===================== */
+/* BASE / RESET STYLES   */
+/* ===================== */
 * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
 }
 
-/* APP LAYOUT */
+/* ===================== */
+/* APP LAYOUT            */
+/* ===================== */
 .app {
   display: flex;
   min-height: 100vh;
 }
 
-/* ICON BAR */
+/* ===================== */
+/* ICON BAR (LEFT NAV)   */
+/* ===================== */
 .icon-bar {
   width: 60px;
   background: var(--panel-dark);
@@ -73,7 +75,9 @@ body {
   margin-top: auto;
 }
 
-/* EXPAND PANEL */
+/* ===================== */
+/* SIDE PANEL (SLIDE)    */
+/* ===================== */
 .panel {
   position: absolute;
   left: 60px;               /* right after icon bar */
@@ -114,7 +118,9 @@ body {
   flex: 1;
 }
 
-/* MAIN CONTENT */
+/* ===================== */
+/* MAIN CONTENT AREA     */
+/* ===================== */
 .main {
   flex: 1;
   padding: 40px;
@@ -183,15 +189,147 @@ input, textarea, select {
 
 /* TAGS */
 .tags {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
+
+.tag-modal {
+  position: relative;
+}
+
+.tag-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .tag {
-  background:#333;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:12px;
+  background: #333;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  min-width: 60px;
+
+  /* ✅ CENTER TEXT */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-display {
+  cursor: pointer;
+}
+
+.tag.tag-display:hover {
+  background: #444;
+}
+
+/* OVERLAY */
+.tag-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+/* MODAL */
+.tag-modal {
+  background: #1a1a25;
+  width: 90%;
+  max-width: 360px;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+/* HEADER */
+
+.tag-modal-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* title should not move */
+.tag-title {
+  white-space: nowrap;
+}
+
+/* QUESTION MARK BUTTON */
+.tag-help {
+  position: absolute;
+  top: 0;     /* closer to top edge */
+  right: 0;   /* closer to right edge */
+  width: 16px;  /* slightly smaller looks cleaner */
+  height: 16px;
+  border-radius: 50%;
+  background: #1a1a25;
+  color: #aaa;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tag-help:hover {
+  background: #3a3a4f;
+  color: #fff;
+}
+
+.tag-modal-header span:first-child {
+  white-space: nowrap;
+}
+
+/* TAG STATUS — FIXED SIZE, NO MODAL RESIZE */
+#tagStatus {
+  max-width: 150px;          /* prevents modal stretch */
+  font-size: 11px;           /* smaller than normal text */
+  line-height: 1.3;
+  white-space: normal;       /* allow wrapping */
+  word-break: break-word;    /* break long words */
+  overflow: hidden;
+
+  /* optional: limit height to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* HELP POPOVER */
+.tag-help-pop {
+  position: absolute;
+  top: 38px;
+  right: 10px;
+  background: rgba(30,30,30,.95);
+  border-radius: 10px;
+  padding: 12px;
+  width: 260px;
+  font-size: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+
+  /* ✅ FORCE LEFT ALIGNMENT */
+  text-align: left;
+}
+
+.tag-help-pop ul {
+  padding-left: 16px;
+  margin: 6px 0 0;
+}
+.tag-help-pop li {
+  margin-bottom: 4px;
 }
 
 /* TABS */
@@ -227,13 +365,108 @@ input, textarea, select {
 
 .profile-menu.hidden { display:none; }
 
-
 /* PROFILE IMAGE */
 .avatar-wrapper {
-  position: relative;
   display: inline-block;
+  position: relative; /* 👈 ADD THIS */
 }
 
+/* COMBINED PROFILE CARD */
+.profile-combined {
+  position: relative;
+  text-align: left;
+}
+
+/* RESET BUTTON (TOP RIGHT, SMALL) */
+.reset-bio-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  padding: 4px 10px;
+  transition: 
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.reset-bio-btn:hover {
+  background: #3a3a55;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.reset-bio-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* GRID LAYOUT */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+/* DIVIDER LINE */
+.profile-divider {
+  background: #2a2a2a;
+}
+
+/* LEFT & RIGHT */
+.profile-left,
+.profile-right {
+  text-align: left;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 140px 14px 1fr;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #c7c9ff;
+}
+
+.info-row .colon {
+  text-align: center;
+  color: #888;
+}
+
+.info-row .value {
+  font-weight: 400;
+  font-size: 14px;
+  color: #eaeaf5;
+  line-height: 1.4;
+}
+
+/* 👇 ONLY Home Address */
+.value-address {
+  font-size: 13px;
+  color: #cfcfe8;
+
+  max-width: 260px;        /* adjust if needed */
+  white-space: nowrap;    /* single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.username {
+  color: #eaeaf5;
+  font-weight: 500;
+}
+
+.userid {
+  color: #8a8a8a;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+/* Profile Frame */
 .avatar {
   width: 160px;
   height: 160px;
@@ -241,40 +474,55 @@ input, textarea, select {
   background: #2a2a2a;
   overflow: hidden;
   cursor: pointer;
+  position: relative;
+  outline: none;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.avatar img {
+..avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  display: block;
+
+  background: transparent;
+  border: none;
+
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 
-.avatar::after {
-  content: "📷";
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0,0,0,.6);
-  border-radius: 50%;
-  padding: 6px;
-  font-size: 14px;
+.avatar img:not([src]),
+.avatar img[src=""] {
+  display: none;
 }
 
 .avatar-menu {
   position: absolute;
-  top: 50%;
-  left: 170px;
-  transform: translateY(-50%) scale(.95);
+
+  top: 100%;          /* below the avatar */
+  right: -150px;        /* slightly overlapping on the right */
+  margin-top: -35px;   /* pull it upward to overlap */
+
+  transform: scale(.95);
+  transform-origin: top right;
+
   opacity: 0;
   pointer-events: none;
+
   background: #1e1e1e;
   border-radius: 8px;
   padding: 4px;
-  width: 170px;          /* smaller */
+  width: 170px;
+
   box-shadow: 0 8px 20px rgba(0,0,0,.45);
   transition: .2s ease;
-  z-index: 10;
-  text-align: left;     /* ✅ left aligned */
+  z-index: 20;
+  text-align: left;
 }
 
 .avatar-menu div {
@@ -293,6 +541,38 @@ input, textarea, select {
 
 .avatar-menu div:hover {
   background: #2a2a2a;
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none; /* hover only, no blocking clicks */
+}
+
+.avatar:hover .avatar-overlay {
+  opacity: 1;
+}
+
+/* REMOVE CLICK / TAP HIGHLIGHTS */
+.avatar,
+.avatar * {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  user-select: none;
+}
+
+.avatar:focus,
+.avatar:focus-visible {
+  outline: none;
 }
 
 .pm-name {
@@ -377,7 +657,9 @@ input, textarea, select {
   margin-top: 10px;
 }
 
-/* UTILITIES */
+/* ===================== */
+/* UTILITIES             */
+/* ===================== */
 .hidden {
   display: none !important;
 }
@@ -501,14 +783,15 @@ input, textarea, select {
 }
 
 /* CATEGORY / QUESTION BUTTONS */
-.tag {
+.help-container .tag {
   background: #2a2a3d;
   padding: 8px 14px;
   border-radius: 18px;
   font-size: 13px;
   cursor: pointer;
 }
-.tag:hover {
+
+.help-container .tag:hover {
   background: #3a3a55;
 }
 
@@ -690,19 +973,6 @@ input, textarea, select {
   margin-bottom: 8px;
 }
 
-.search-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-.search-modal.active {
-  display: flex;
-}
-
 /* Overlay */
 .modal-overlay {
   position: fixed;
@@ -765,6 +1035,43 @@ input, textarea, select {
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
+}
+
+/* FLOATING SEARCH DROPDOWN */
+.friend-search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+
+  min-width: 180px;
+  max-width: 320px;
+  width: max-content;
+
+  background: #1a1a25;
+  border-radius: 10px;
+  padding: 8px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.friend-search-dropdown.hidden {
+  display: none;
+}
+
+.friend-search-dropdown .result {
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.friend-search-dropdown .result:hover {
+  background: #2a2a38;
 }
 
 /* Content */
@@ -838,67 +1145,11 @@ input, textarea, select {
   100% { transform: rotate(0deg); }
 }
 
-@media (max-width: 768px) {
-
-  /* STACK LAYOUT INSTEAD OF SIDE-BY-SIDE */
-  .app {
-    flex-direction: column;
-  }
-
-  /* ICON BAR → BOTTOM NAV */
-  .icon-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
-    z-index: 1000;
-  }
-
-  .icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  /* MAIN CONTENT */
-  .main {
-    padding: 16px;
-    margin-bottom: 70px; /* space for bottom bar */
-  }
-
-  /* SIDE PANEL → FULL SCREEN SLIDE */
-  .panel {
-    left: 0;
-    width: 100%;
-    height: 100vh;
-  }
-
-}
-
-@media (max-width: 480px) {
-
-  .modal-box,
-  .friend-modal {
-    width: 92%;
-    max-width: 92%;
-  }
-
-  .msg-search {
-    width: 100%;
-  }
-
-  .help-container {
-    width: 100%;
-    border-radius: 0;
-  }
-
-  .chat-area {
-    height: 60vh;
-  }
-
+/* ===================== */
+/* Bio Message Text Box  */
+/* ===================== */
+.bio-textarea {
+  resize: none; /* ❌ disables resizing */
 }
 
 </style>
@@ -911,14 +1162,12 @@ input, textarea, select {
   <div class="icon-bar">
     <div class="icon" onclick="openMainMenu()">※</div>
     <div class="icon" onclick="showHome()">🏠</div>
-    <div class="icon" onclick="openSearch()">🔍</div>
     <div class="icon notification-icon" onclick="showNotifications()">
   🔔
   <span id="notifBadge" class="notif-badge hidden">0</span>
 </div>
     <div class="icon" onclick="openPanel('messages')">💬</div>
     <div class="icon" onclick="openPanel('friends')">👥</div>
-    <div class="icon" onclick="openPanel('games')">🎮</div>
     <div class="icon profile-icon bottom" onclick="toggleProfileMenu()">👤</div>
   </div>
 
@@ -941,53 +1190,28 @@ input, textarea, select {
     <div class="panel-content" id="panelContent"></div>
   </div>
 
-<!-- MAIN CONTENT -->
-<div class="main" id="mainContent">
+    <!-- MAIN CONTENT -->
+    <div class="main" id="mainContent">
+      <h1>Welcome back 👋</h1>
+      <p>This is your Asterism homepage.</p>
 
-  <!-- 🔥 FIREBASE CHAT (HIDDEN BY DEFAULT) -->
-  <div id="firebaseChat" class="hidden">
-    <div style="display:flex; height:100%; gap:16px;">
-      <!-- USER LIST -->
-      <div style="width:260px; background:#1e1e1e; border-radius:12px; padding:12px; overflow-y:auto;">
-        <h3 style="margin-top:0;">Users</h3>
-        <div id="userList"></div>
-      </div>
-
-      <!-- CHAT AREA -->
-      <div style="flex:1; background:#14141d; border-radius:12px; display:flex; flex-direction:column;">
-        <div id="chatBox" style="flex:1; padding:16px; overflow-y:auto;"></div>
-        <div style="display:flex; gap:10px; padding:12px; border-top:1px solid #2a2a3d;">
-          <input id="msgInput" placeholder="Type a message…" />
-          <button class="btn" onclick="sendMessage()">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ✅ NORMAL PAGE CONTENT -->
-  <div id="pageContent">
-    <h1>Welcome back 👋</h1>
-    <p>This is your Asterism homepage.</p>
-
-    <footer style="margin-top:60px; font-size:13px; color:#888; text-align:center;">
-      © 2026 Asterism ※ · All rights reserved ·
-      <a href="terms.html" style="color:#aaa;">Terms & Privacy</a>
-      <p style="margin-top:10px;">
+  <!-- FOOTER -->
+  <footer style="
+    margin-top:60px;
+    font-size:13px;
+    color:#888;
+    text-align:center;
+  ">
+    © 2026 Asterism ※ · All rights reserved ·
+    <a href="#" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
+    <p style="margin-top:10px;">
       Questions? Contact us at
-      <a href="mailto:accxs.asterism@gmail.com" style="color:#aaa;">
-        accxs.asterism@gmail.com
+      <a href="mailto:support@asterism.com" style="color:#aaa;">
+        support@asterism.com
       </a>
     </p>
-    </footer>
-  </div>
-</div>
-
-<!-- SEARCH MODAL -->
-<div class="search-modal" id="searchModal">
-  <div class="modal-box">
-    <h3>Search Users</h3>
-    <input type="text" placeholder="Username or User ID">
-  </div>
+  </footer>
+ </div>
 </div>
 
 <script>
@@ -995,7 +1219,8 @@ const panel = document.getElementById("sidePanel");
 const title = document.getElementById("panelTitle");
 const content = document.getElementById("panelContent");
 const main = document.getElementById("mainContent");
-const DEFAULT_TAGS = ["#Newbie", "#Gamer", "#Friendly", "#Amazed"];
+const DEFAULT_TAGS = ["Newbie", "Friendly", "Amazed", "Talkative"];
+const DEFAULT_BIO = "Explorer of ideas and digital worlds.";
 
 function openPanel(type) {
   if (panel.classList.contains("active") && title.textContent.toLowerCase() === type) {
@@ -1009,17 +1234,12 @@ function openPanel(type) {
     notifications: "No new notifications.",
     messages: "Recent conversations will appear here.",
     friends: "Online / Offline friends list.",
-    games: "Available games list.",
     settings: "Settings options go here.",
     profile: "Full profile details, bio, posts."
   };
 
   title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
   content.textContent = data[type];
-}
-
-function openSearch() {
-  document.getElementById("searchModal").classList.add("active");
 }
 
 function closeSidePanel() {
@@ -1041,7 +1261,6 @@ function openMainMenu() {
     <div class="card" onclick="showNotifications()">Notification</div>
     <div class="card" onclick="showMessages()">Message</div>
     <div class="card" onclick="showFriendList()">FriendList</div>
-    <div class="card" onclick="showGames()">Games</div>
     <div class="card" onclick="openSettingsFromMenu(); closeSidePanel()">Settings</div>
     <div class="card" onclick="openHelp(); closeSidePanel()">Help</div>
     <div class="card" style="color:#ff6b6b;" onclick="openLogout()">Log Out</div>
@@ -1074,9 +1293,6 @@ function showNotifications() {
       </div>
       <div class="card notification unread">
         💬 You received a new message
-      </div>
-      <div class="card notification">
-        🎮 Game invite accepted
       </div>
     </div>
   `);
@@ -1120,9 +1336,50 @@ function receiveNewNotification(text) {
 
 function showMessages() {
   closeSidePanel();
+  currentMessageCategory = "Inbox";
 
-  document.getElementById("pageContent").classList.add("hidden");
-  document.getElementById("firebaseChat").classList.remove("hidden");
+  renderMain(`
+    <!-- HEADER -->
+    <div class="msg-header">
+      <h1>Messages</h1>
+
+      <div class="msg-header-right">
+        <input
+          class="msg-search"
+          placeholder="Search messages..."
+          oninput="filterMessages(this.value)"
+        />
+
+        <div class="status-wrapper">
+          <span class="status-icon" onclick="toggleStatusMenu()">⚙️</span>
+          <div id="statusMenu" class="status-menu hidden">
+            ${["Online","Offline","Do Not Disturb"].map(s => `
+              <div class="status-item ${userStatus===s?"active":""}"
+                onclick="setStatus('${s}')">${s}</div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div id="messageToolbar" class="msg-toolbar"></div>
+
+    <!-- CATEGORIES -->
+    <div class="tabs msg-tabs">
+      ${["Inbox","Favorites","Drafts","Sent","GroupChat","Archived","Deleted"]
+        .map(cat =>
+          `<div class="tab ${cat==="Inbox"?"active":""}"
+            onclick="switchMessageCategory(this,'${cat}')">${cat}</div>`
+        ).join("")}
+    </div>
+
+    <!-- MESSAGE LIST -->
+    <div id="messageList" class="msg-list"></div>
+  `);
+
+  renderMessages();
+  renderMessageToolbar();
 }
 
 function renderMessages() {
@@ -1233,16 +1490,62 @@ function setStatus(status) {
 }
 
 function showFriendList() {
-  document.getElementById("firebaseChat").classList.add("hidden");
   closeSidePanel();
+
   renderMain(`
     <div style="display:flex; justify-content:space-between; align-items:center;">
-     <h1>Friends</h1>
-     <button class="icon-btn" onclick="openFriendModal()">⚙️</button>
+      <h1>Friends</h1>
+
+      <!-- SEARCH WRAPPER (THIS IS IMPORTANT) -->
+      <div style="display:flex; gap:10px; align-items:center; position:relative;">
+
+        <!-- SEARCH INPUT -->
+        <input
+          id="friendSearchInput"
+          type="text"
+          placeholder="Search Username / ID #"
+          oninput="searchFriends(this.value)"
+          style="width:180px;"
+        />
+
+        <!-- 🔽 SLIDING / FLOATING CONTAINER (PUT IT HERE) -->
+        <div
+          id="friendSearchResults"
+          class="friend-search-dropdown hidden"
+        ></div>
+
+        <button class="icon-btn" onclick="openFriendModal()">⚙️</button>
+      </div>
     </div>
+
     <div class="card">Online Friends</div>
     <div class="card">Offline Friends</div>
   `);
+}
+
+function searchFriends(value) {
+  const box = document.getElementById("friendSearchResults");
+  if (!box) return;
+
+  if (!value.trim()) {
+    box.classList.add("hidden");
+    box.innerHTML = "";
+    return;
+  }
+
+  box.classList.remove("hidden");
+
+  // TEMP SAMPLE
+  const results = [];
+
+  if (!results.length) {
+    box.innerHTML = `<div class="result">ID/User not Existed</div>`;
+    return;
+  }
+
+  box.innerHTML = results.map(u =>
+    `<div class="result">${u.name}</div>`
+  ).join("");
 }
 
 function openFriendModal() {
@@ -1326,19 +1629,9 @@ function cancelRequest(id) {
   alert("Cancelled request to " + id);
 }
 
-function showGames() {
-  document.getElementById("firebaseChat").classList.add("hidden");
-  closeSidePanel();
-  renderMain(`
-    <h1>Games</h1>
-    <div class="card">🎯 Game 1</div>
-    <div class="card">🕹 Game 2</div>
-  `);
-}
-
 function openSettingsFromMenu() {
   document.getElementById("profileMenu").classList.add("hidden");
-  document.getElementById("firebaseChat").classList.add("hidden");
+
   renderMain(`
     <h1>Settings</h1>
     <p>Manage your account and security.</p>
@@ -1367,7 +1660,6 @@ function openSettingsFromMenu() {
 }
 
 function showProfile() {
-document.getElementById("firebaseChat").classList.add("hidden");
   renderMain(`
     <!-- PROFILE WRAPPER -->
     <div style="max-width:700px; margin:0 auto; text-align:center;">
@@ -1375,7 +1667,8 @@ document.getElementById("firebaseChat").classList.add("hidden");
       <!-- AVATAR -->
 <div class="avatar-wrapper">
   <div class="avatar" onclick="toggleAvatarMenu(event)">
-    <img id="avatarImg">
+   <img id="avatarImg">
+   <div class="avatar-overlay">+</div>
   </div>
 
   <div id="avatarMenu" class="avatar-menu">
@@ -1392,51 +1685,128 @@ document.getElementById("firebaseChat").classList.add("hidden");
         Bryan Gutierrez Ablao
       </h2>
 
-      <!-- BASIC INFO -->
-<div class="card profile-info">
-  <p><span>Birthdate:</span> January 1, 2000</p>
-  <p><span>Gender:</span> Male</p>
-  <p><span>Contact #:</span> +63 900 000 0000</p>
-  <p><span>Home Address:</span> Davao City, Philippines</p>
-  <p><span>Nationality:</span> Filipino</p>
+<div class="card profile-combined">
+
+  <!-- RESET BIO BUTTON -->
+  <button class="btn secondary reset-bio-btn" onclick="resetBio()">
+    Reset Bio
+  </button>
+
+  <div class="profile-grid">
+
+    <!-- LEFT SIDE -->
+    <div class="profile-left">
+<div class="info-row">
+  <span class="label">Username / ID #</span>
+  <span class="colon">:</span>
+  <span class="value">
+    <span class="username">
+      @<span id="usernameValue">bryan.ablao</span>
+    </span>
+    <span class="userid">
+      #<span id="userIdValue">0123456</span>
+    </span>
+  </span>
 </div>
 
-      <!-- BIO and TAGS-->
-<div class="card" style="text-align:left; margin-top:20px;">
+<p class="info-row">
+  <span class="label">Contact #</span>
+  <span class="colon">:</span>
+  <span class="value">+63 992 876 0990</span>
+</p>
 
-<label class="bio-label">
-  Bio <span class="bio-hint">(Max 200 characters)</span>
-</label>
-<textarea
-  class="bio-textarea"
-  maxlength="200"
-  rows="3"
-  oninput="saveProfileState()"
-  onfocus="showBioHint(true)"
-  onblur="showBioHint(false)"
->Explorer of ideas and digital worlds.</textarea>
+<p class="info-row">
+  <span class="label">Birthdate</span>
+  <span class="colon">:</span>
+  <span class="value">April 04, 2000</span>
+</p>
 
-<button
-  class="btn secondary"
-  style="margin-top:8px; font-size:12px;"
-  onclick="resetBio()">
-  Reset Bio
-</button>
+<p class="info-row">
+  <span class="label">Nationality</span>
+  <span class="colon">:</span>
+  <span class="value">Filipino</span>
+</p>
 
-  <div style="margin-top:18px;">
-    <label>Tags</label>
-    <div class="tags" style="margin-top:10px;">
-      <span class="tag" contenteditable oninput="protectHash(this)">#Newbie</span>
-      <span class="tag" contenteditable oninput="protectHash(this)">#Gamer</span>
-      <span class="tag" contenteditable oninput="protectHash(this)">#Amazed</span>
-      <span class="tag" contenteditable
-        onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag(this)}">
-      #AddTag
-      </span>
-
+<div class="info-row">
+  <span class="label">Home Address</span>
+  <span class="colon">:</span>
+  <span class="value value-address">
+    Prk. 3 Riverbed Barrangay 22-C Piape Boulevard Davao City, Philippines
+  </span>
+</div>
     </div>
-  </div>
 
+    <!-- DIVIDER -->
+    <div class="profile-divider"></div>
+
+    <!-- RIGHT SIDE -->
+    <div class="profile-right">
+      <label class="bio-label">
+        Bio <span class="bio-hint">(Max 200 characters)</span>
+      </label>
+
+      <textarea
+        class="bio-textarea"
+        id="bioTextarea"
+        maxlength="200"
+        rows="3"
+        placeholder="Explorer of ideas and digital worlds."
+        oninput="handleBioInput()"
+      ></textarea>
+
+      <div style="margin-top:16px;">
+        <label>Tags</label>
+        <div class="tags">
+          <span class="tag tag-display" data-index="0">Newbie</span>
+          <span class="tag tag-display" data-index="1">Friendly</span>
+          <span class="tag tag-display" data-index="2">Amazed</span>
+          <span class="tag tag-display" data-index="3">Talkative</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TAG MODAL OVERLAY -->
+<div id="tagModalOverlay" class="tag-modal-overlay hidden">
+  <div class="tag-modal" onclick="event.stopPropagation()">
+
+<div class="tag-modal-header">
+  <span class="tag-title">Enter your Tag</span>
+
+  <span id="tagStatus" style="font-size:12px; display:none;"></span>
+
+  <span class="tag-help" onclick="toggleTagHelp(event)">?</span>
+</div>
+
+    <input
+      id="tagInput"
+      type="text"
+      placeholder="e.g. Star"
+      maxlength="10"
+      oninput="autoCapitalizeTag(this)"
+    />
+
+    <button class="btn" onclick="saveTag()">Save</button>
+
+    <!-- HELP POPOVER -->
+    <div id="tagHelp" class="tag-help-pop hidden">
+      <strong>What are tags?</strong>
+<p>
+  Tags help others quickly understand who you are and what you’re about.
+  You can use them to express your current mood, personality, interests,
+  hobbies, lifestyle, communication style, or anything that represents you
+  at the moment. Think of tags as short personal highlights that make your
+  profile feel more alive and authentic.
+</p>
+      <ul>
+        <li>3–10 letters only</li>
+        <li>No numbers, symbols, or emojis</li>
+      </ul>
+    </div>
+
+  </div>
 </div>
 
       <!-- POST / GALLERY -->
@@ -1462,8 +1832,14 @@ document.getElementById("firebaseChat").classList.add("hidden");
     </div>
   `);
 
-setTimeout(loadProfileState, 0);
-}
+  // ✅ NOW the element exists
+  const overlay = document.getElementById("tagModalOverlay");
+  overlay.onclick = closeTagModal;
+
+  setTimeout(() => {
+    loadProfileState();
+  }, 0);
+ }
 
 function switchProfileTab(tab, type) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -1511,29 +1887,121 @@ document.addEventListener("click", e => {
   }
 });
 
-function addTag(el) {
-  const newTag = document.createElement("span");
-  newTag.className = "tag";
-  newTag.contentEditable = true;
-  newTag.textContent = "#NewTag";
-  el.parentElement.appendChild(newTag);
-  newTag.focus();
+function handleBioInput() {
+  saveProfileState();
 }
 
-function protectHash(tag) {
-  if (!tag.textContent.startsWith("#")) {
-    tag.textContent = "#" + tag.textContent.replace(/#/g, "");
-    placeCaretAtEnd(tag);
+const BAD_WORDS = [
+  "fuck","fuckyou","shit","shet","bitch","poop","tae",
+  "gago","buang","yawa","tanginamo","packyu"
+];
+
+function hideTagStatus() {
+  const el = document.getElementById("tagStatus");
+  if (el) el.style.display = "none";
+}
+
+function showTagStatus(text, type) {
+  const el = document.getElementById("tagStatus");
+  if (!el) return;
+
+  el.textContent = text;
+  el.style.display = "block";
+  el.style.color = type === "error" ? "#ff6b6b" : "#4ade80";
+
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => {
+    el.style.display = "none";
+  }, 4000);
+}
+
+let activeTagIndex = null;
+
+function openTagModal() {
+  const overlay = document.getElementById("tagModalOverlay");
+  if (!overlay) return; // ✅ prevents crash
+
+  overlay.classList.remove("hidden");
+  document.getElementById("tagHelp").classList.add("hidden");
+
+  setTimeout(() => {
+    document.getElementById("tagInput")?.focus();
+  }, 50);
+}
+
+function closeTagModal() {
+  document.getElementById("tagModalOverlay").classList.add("hidden");
+  activeTagIndex = null;
+}
+
+function saveTag() {
+  const inputEl = document.getElementById("tagInput");
+  let value = inputEl.value.trim();
+
+  // 1️⃣ basic validation
+  if (!/^[A-Za-z]{3,10}$/.test(value)) {
+    showTagStatus(
+      "3–10 letters only. Please try again.",
+      "error"
+    );
+    return;
   }
+
+  // 2️⃣ 🚫 BAD WORD CHECK — PUT IT HERE
+  if (BAD_WORDS.includes(value.toLowerCase())) {
+    showTagStatus(
+      "Rule Code Error 101: Inappropriate tags are not allowed.",
+      "error"
+    );
+    return;
+  }
+
+  // 3️⃣ format text
+  value =
+    value.charAt(0).toUpperCase() +
+    value.slice(1).toLowerCase();
+
+  // 4️⃣ apply to the clicked tag
+  const tag = document.querySelector(
+    `.tag-display[data-index="${activeTagIndex}"]`
+  );
+  tag.textContent = value;
+
+  saveProfileState();
+  closeTagModal();
 }
 
-function placeCaretAtEnd(el) {
-  const range = document.createRange();
-  const sel = window.getSelection();
-  range.selectNodeContents(el);
-  range.collapse(false);
-  sel.removeAllRanges();
-  sel.addRange(range);
+function toggleTagHelp(e) {
+  e.stopPropagation();
+  document.getElementById("tagHelp").classList.toggle("hidden");
+}
+
+function autoCapitalizeTag(input) {
+  if (!input.value) return;
+  input.value =
+    input.value.charAt(0).toUpperCase() +
+    input.value.slice(1).toLowerCase();
+}
+
+document.addEventListener("click", e => {
+  const help = document.getElementById("tagHelp");
+  if (help && !e.target.closest(".tag-help-pop") &&
+      !e.target.classList.contains("tag-help")) {
+    help.classList.add("hidden");
+  }
+});
+
+function resetBio() {
+  document.getElementById("bioTextarea").value = "";
+
+  document.querySelectorAll(".tag-display")
+    .forEach((tag, i) => {
+      tag.textContent = DEFAULT_TAGS[i];
+    });
+
+  localStorage.removeItem("profileData");
+  closeTagModal(); // ✅ ADD THIS
+  showTagStatus("Profile reset to default.", "info");
 }
 
 function renderMain(content) {
@@ -1550,8 +2018,8 @@ function renderMain(content) {
       <a href="#" style="color:#aaa; text-decoration:none;">Terms & Privacy</a>
       <p style="margin-top:10px;">
         Questions? Contact us at
-        <a href="mailto:accxs.asterism@gmail.com" style="color:#aaa;">
-          accxs.asterism@gmail.com
+        <a href="mailto:support@asterism.com" style="color:#aaa;">
+          support@asterism.com
         </a>
       </p>
     </footer>
@@ -1653,50 +2121,8 @@ function saveProfileModal() {
   setTimeout(closeModal, 1500);
 }
 
-function lockHash(e, el) {
-  const sel = window.getSelection();
-  const pos = sel.anchorOffset;
-
-  // Prevent deleting the #
-  if (
-    (e.key === "Backspace" && pos <= 1) ||
-    (e.key === "Delete" && pos === 0)
-  ) {
-    e.preventDefault();
-  }
-
-  // Prevent Enter creating new line
-  if (e.key === "Enter") {
-    e.preventDefault();
-  }
-}
-
-function resetBio() {
-  // Reset bio
-  const bio = document.querySelector(".bio-textarea");
-  if (bio) bio.value = "";
-
-  // Reset tags
-  const tagsWrap = document.querySelector(".tags");
-  tagsWrap.innerHTML = "";
-
-  DEFAULT_TAGS.forEach(t => {
-    const span = document.createElement("span");
-    span.className = "tag";
-    span.contentEditable = true;
-    span.textContent = t;
-
-    span.oninput = () => protectHash(span);
-    span.onkeydown = e => lockHash(e, span);
-
-    tagsWrap.appendChild(span);
-  });
-
-  // Save immediately
-  saveProfileState();
-}
-
 function openLogout() {
+  // Lock the modal (no close)
   document.getElementById("modalOverlay").onclick = null;
 
   openModal(`
@@ -1708,20 +2134,23 @@ function openLogout() {
     </div>
   `);
 
+  // Disable background clicks
   document.body.style.pointerEvents = "none";
   document.getElementById("modalOverlay").style.pointerEvents = "all";
 
+  // Animated dots
   let dots = 1;
   const dotsEl = document.getElementById("logoutDots");
+
   const dotInterval = setInterval(() => {
     dots = (dots % 3) + 1;
     dotsEl.textContent = ".".repeat(dots);
   }, 500);
 
-  setTimeout(async () => {
+  // Redirect after 7 seconds
+  setTimeout(() => {
     clearInterval(dotInterval);
-    await window.firebaseSignOut(window.auth);
-    window.location.href = "index.html";
+    window.location.href = "https://example.com"; // 🔁 change later
   }, 7000);
 }
 
@@ -1737,8 +2166,12 @@ function closeModal(e) {
 const profileMenu = document.getElementById("profileMenu");
 
 function showHome() {
-  document.getElementById("firebaseChat").classList.add("hidden");
-  document.getElementById("pageContent").classList.remove("hidden");
+  panel.classList.remove("active");
+
+  renderMain(`
+    <h1>Welcome back 👋</h1>
+    <p>This is your Asterism homepage.</p>
+  `);
 }
 
 function openProfileFromMenu() {
@@ -1821,7 +2254,7 @@ const HELP_DATA = {
 
   "Support": {
     "How can I contact live customer support?":
-      "You may contact our support team at any time via email at accxs.asterism@gmail.com. Our support service is available 24/7.",
+      "You may contact our support team at any time via email at support@asterism.com. Our support service is available 24/7.",
     "Is this chat operated by a real person or an automated system?":
     "This chat is powered by an automated support assistant designed to provide immediate answers. For live human assistance, please contact our support team via email."
   },
@@ -2022,7 +2455,7 @@ function saveProfileState() {
   localStorage.setItem("profileData", JSON.stringify({
     avatar: document.getElementById("avatarImg")?.src || "",
     bio: document.querySelector(".bio-textarea")?.value || "",
-    tags: [...document.querySelectorAll(".tag")]
+    tags: [...document.querySelectorAll(".tags .tag")]
       .map(t => t.textContent)
   }));
 }
@@ -2132,46 +2565,43 @@ function loadProfileState() {
     document.getElementById("avatarImg").src = data.avatar;
   }
 
-  if (data.bio) {
-    document.querySelector(".bio-textarea").value = data.bio;
-  }
+  const bio = document.getElementById("bioTextarea");
+if (!bio) return;
 
-  const tagsWrap = document.querySelector(".tags");
-  if (!tagsWrap) return;
-
-  // ✅ IF saved tags exist → load them
-  if (data.tags && data.tags.length) {
-    tagsWrap.innerHTML = "";
-
-    data.tags.forEach(t => {
-      const span = document.createElement("span");
-      span.className = "tag";
-      span.contentEditable = true;
-      span.textContent = t;
-      span.oninput = () => protectHash(span);
-      span.onkeydown = e => lockHash(e, span);
-      tagsWrap.appendChild(span);
-    });
-
-  // ✅ ELSE → reset to default tags
-  } else {
-    tagsWrap.innerHTML = "";
-
-    DEFAULT_TAGS.forEach(t => {
-      const span = document.createElement("span");
-      span.className = "tag";
-      span.contentEditable = true;
-      span.textContent = t;
-      span.oninput = () => protectHash(span);
-      span.onkeydown = e => lockHash(e, span);
-      tagsWrap.appendChild(span);
-    });
-  }
+// If user has saved bio → show it
+if (data.bio && data.bio.length > 0) {
+  bio.value = data.bio;
+} else {
+  // Otherwise keep empty so placeholder shows
+  bio.value = "";
 }
 
-document.getElementById("searchModal").addEventListener("click", e => {
-  if (e.target.id === "searchModal") {
-    e.target.classList.remove("active");
+const tags = document.querySelectorAll(".tags .tag");
+if (!tags.length) return;
+
+tags.forEach((tag, i) => {
+  if (data.tags && data.tags[i] && data.tags[i].length > 0) {
+    tag.textContent = data.tags[i];
+  } else {
+    tag.textContent = DEFAULT_TAGS[i];
+  }
+});
+} // ✅ THIS WAS MISSING
+
+// ==============================
+// TAG MODAL KEYBOARD CONTROLS
+// ==============================
+document.addEventListener("keydown", e => {
+  const modal = document.getElementById("tagModalOverlay");
+  if (!modal || modal.classList.contains("hidden")) return;
+
+  if (e.key === "Escape") {
+    closeTagModal();
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    saveTag();
   }
 });
 
@@ -2196,6 +2626,28 @@ document.addEventListener("click", e => {
     menu.classList.add("hidden");
   }
 });
+
+document.addEventListener("click", e => {
+  const tag = e.target.closest(".tag-display");
+  if (!tag) return;
+
+  const input = document.getElementById("tagInput");
+  if (!input) return; // ✅ prevent crash
+
+  activeTagIndex = Number(tag.dataset.index);
+  input.value = "";
+  openTagModal();
+});
+
+document.querySelectorAll('.value-address').forEach(el => {
+  const length = el.textContent.length;
+
+  if (length > 30) el.style.fontSize = '12px';
+  if (length > 45) el.style.fontSize = '11px';
+});
+
+document.getElementById("usernameValue").textContent = firebaseUsername;
+document.getElementById("userIdValue").textContent = firebaseUserId;
 
 </script>
 
@@ -2258,162 +2710,6 @@ document.addEventListener("click", e => {
     <div id="modalStatus" class="card-desc"></div>
   </div>
 </div>
-
-<script type="module">
-  import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { doc, setDoc } from
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-  import {
-    getFirestore,
-    collection,
-    getDocs,
-    addDoc,
-    query,
-    orderBy,
-    onSnapshot,
-    serverTimestamp
-  } from
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-  // 🔐 FIREBASE CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJGiY9wfbZObsZu5WPiOGjfSutO5f_P0w",
-    authDomain: "chat-app-5d7eb.firebaseapp.com",
-    projectId: "chat-app-5d7eb",
-    storageBucket: "chat-app-5d7eb.firebasestorage.app",
-    messagingSenderId: "1073056096498",
-    appId: "1:1073056096498:web:67c4a7038c5329d50a306b"
-  };
-
-  // 🔥 INIT
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // 🌍 GLOBAL ACCESS
-  window.auth = auth;
-  window.db = db;
-
-  // 👤 CURRENT USER
-  let currentUser = null;
-  let activeChatId = null;
-
-  // 🔒 AUTH GUARD
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      currentUser = user;
-
-await setDoc(
-  doc(db, "users", user.uid),
-  {
-    firstName: user.displayName || user.email.split("@")[0],
-    email: user.email,
-    createdAt: serverTimestamp()
-  },
-  { merge: true }
-);
-      console.log("Logged in as:", user.email);
-      loadUsers();
-    }
-  });
-
-  // =========================
-  // 👥 LOAD USERS
-  // =========================
-  async function loadUsers() {
-    const userList = document.getElementById("userList");
-    if (!userList) return;
-
-    userList.innerHTML = "";
-    const snap = await getDocs(collection(db, "users"));
-
-    snap.forEach(doc => {
-      if (doc.id === currentUser.uid) return;
-
-      const div = document.createElement("div");
-      div.className = "card";
-      div.textContent = doc.data().firstName;
-      div.onclick = () => openChat(doc.id);
-      userList.appendChild(div);
-    });
-  }
-
-  let unsubscribeChat = null;
-  
-  // =========================
-  // 💬 OPEN CHAT
-  // =========================
-  function openChat(otherUserId) {
-    activeChatId = [currentUser.uid, otherUserId].sort().join("_");
-    listenForMessages();
-  }
-
-  // =========================
-  // 📨 SEND MESSAGE
-  // =========================
-  window.sendMessage = async function () {
-    const input = document.getElementById("msgInput");
-    if (!input || !activeChatId) return;
-
-    const text = input.value.trim();
-    if (!text) return;
-
-    await addDoc(
-      collection(db, "messages", activeChatId, "items"),
-      {
-        senderId: currentUser.uid,
-        text,
-        createdAt: serverTimestamp()
-      }
-    );
-
-    input.value = "";
-  };
-
-  // =========================
-  // 🔴 REAL‑TIME LISTENER
-  // =========================
-  function listenForMessages() {
-  const chatBox = document.getElementById("chatBox");
-  if (!chatBox) return;
-
-  if (unsubscribeChat) unsubscribeChat(); // 🔥 stop old listener
-
-  const q = query(
-    collection(db, "messages", activeChatId, "items"),
-    orderBy("createdAt")
-  );
-
-  unsubscribeChat = onSnapshot(q, snap => {
-    chatBox.innerHTML = "";
-    snap.forEach(doc => {
-      const msg = document.createElement("div");
-      msg.className =
-        doc.data().senderId === currentUser.uid
-          ? "msg user"
-          : "msg bot";
-      msg.innerHTML = `<div class="bubble">${doc.data().text}</div>`;
-      chatBox.appendChild(msg);
-    });
-    chatBox.scrollTop = chatBox.scrollHeight;
-  });
-}
-
-  // =========================
-  // 🚪 LOG OUT
-  // =========================
-  window.logout = () => signOut(auth);
-</script>
 
 </body>
 </html>
