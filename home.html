@@ -1169,7 +1169,7 @@ input, textarea, select {
 </div>
     <div class="icon" onclick="openPanel('messages')">💬</div>
     <div class="icon" onclick="openPanel('friends')">👥</div>
-    <div class="icon profile-icon bottom" onclick="toggleProfileMenu()">👤</div>
+    <div class="icon profile-icon bottom" onclick="window.toggleProfileMenu()">👤</div>
   </div>
 
   <!-- PROFILE DROPDOWN MENU -->
@@ -1602,8 +1602,8 @@ function closeFriendModal() {
 }
 
 function hideAllLists() {
-  document.getElementById("incomingList").classList.add("hidden");
-  document.getElementById("sentList").classList.add("hidden");
+  document.getElementById("incomingList")?.classList.add("hidden");
+  document.getElementById("sentList")?.classList.add("hidden");
 }
 
 function showRequests() {
@@ -2043,6 +2043,21 @@ async function resetBio() {
   });
 
   showTagStatus("Profile reset to default.", "info");
+}
+
+async function saveProfileState() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const bio = document.getElementById("bioTextarea")?.value || "";
+
+  const tags = [...document.querySelectorAll(".tag-display")]
+    .map(t => t.textContent);
+
+  await updateDoc(doc(db, "users", user.uid), {
+    bio,
+    tags
+  });
 }
 
 function renderMain(content) {
