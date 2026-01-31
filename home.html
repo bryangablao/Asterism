@@ -1251,12 +1251,13 @@ async function loadProfileFromFirebase() {
   if (!user) return;
 
   const snap = await getDoc(doc(db, "users", user.uid));
-
   if (!snap.exists()) return;
 
   const data = snap.data();
-  
+
+  // ✅ PUT ALL data usage HERE
   document.getElementById("userIdValue").textContent = user.uid.slice(0,6);
+  document.getElementById("usernameValue").textContent = data.username || "";
   document.getElementById("bioTextarea").value = data.bio || "";
 
   if (data.avatar) {
@@ -2704,7 +2705,6 @@ document.querySelectorAll('.value-address').forEach(el => {
   if (length > 45) el.style.fontSize = '11px';
 });
 
-document.getElementById("usernameValue").textContent = data.username;
 document.getElementById("userIdValue").textContent = firebaseUserId;
 
 Object.assign(window, {
