@@ -1265,17 +1265,6 @@ async function loadProfileFromFirebase() {
   }
 }
 
-async function saveProfileState() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  await updateDoc(doc(db, "users", user.uid), {
-    bio: document.getElementById("bioTextarea").value,
-    tags: [...document.querySelectorAll(".tag-display")]
-      .map(t => t.textContent)
-  });
-}
-
 function openPanel(type) {
   if (panel.classList.contains("active") && title.textContent.toLowerCase() === type) {
     panel.classList.remove("active");
@@ -2528,13 +2517,9 @@ async function saveProfileState() {
 
   await updateDoc(doc(db, "users", user.uid), {
     bio: document.getElementById("bioTextarea").value,
-    tags: [...document.querySelectorAll(".tags .tag")]
+    tags: [...document.querySelectorAll(".tag-display")]
       .map(t => t.textContent)
   });
-}
-
-function showBioHint(show) {
-  document.querySelector(".bio-hint").style.display = show ? "inline" : "none";
 }
 
 function openBlockedUsersModal() {
