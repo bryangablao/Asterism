@@ -1255,8 +1255,7 @@ async function loadProfileFromFirebase() {
   if (!snap.exists()) return;
 
   const data = snap.data();
-
-  document.getElementById("usernameValue").textContent = data.username || "";
+  
   document.getElementById("userIdValue").textContent = user.uid.slice(0,6);
   document.getElementById("bioTextarea").value = data.bio || "";
 
@@ -1617,9 +1616,10 @@ function showSent() {
 
 /* Close when clicking outside */
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("friendModalOverlay")
-    .onclick = closeFriendModal;
+  const overlay = document.getElementById("friendModalOverlay");
+  if (overlay) {
+    overlay.onclick = closeFriendModal;
+  }
 });
 
 function loadFriendRequests() {
@@ -2704,7 +2704,7 @@ document.querySelectorAll('.value-address').forEach(el => {
   if (length > 45) el.style.fontSize = '11px';
 });
 
-document.getElementById("usernameValue").textContent = firebaseUsername;
+document.getElementById("usernameValue").textContent = data.username;
 document.getElementById("userIdValue").textContent = firebaseUserId;
 
 Object.assign(window, {
