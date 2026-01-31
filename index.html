@@ -262,75 +262,67 @@ footer a:hover { text-decoration: underline; }
   </footer>
 </div>
 
-<script>
-const card = document.getElementById("card");
-const loginBox = document.getElementById("loginBox");
-const registerBox = document.getElementById("registerBox");
+<script type="module">
+/* =========================
+   🔥 Firebase Imports
+========================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+/* =========================
+   🔥 Your Firebase Config
+========================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyB3W5StEiqUhysp7cMpnoh64qelbY8CO4U",
+  authDomain: "asterism-b8a45.firebaseapp.com",
+  projectId: "asterism-b8a45",
+  storageBucket: "asterism-b8a45.firebasestorage.app",
+  messagingSenderId: "313916930564",
+  appId: "1:313916930564:web:5f5cae392b66c27dea1351"
+};
+
+/* =========================
+   🔥 Initialize Firebase
+========================= */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+/* =========================
+   🔥 LOGIN
+========================= */
+const loginBtn = document.getElementById("loginBtn");
 const statusMsg = document.getElementById("statusMsg");
 
-function resizeCard() {
-  const active = card.classList.contains("flip") ? registerBox : loginBox;
-  card.style.height = active.offsetHeight + "px";
-}
+loginBtn.addEventListener("click", async () => {
+  const email = document.querySelector('.login input[type="email"]').value;
+  const pass  = document.querySelector('.login input[type="password"]').value;
 
-function flipCard() {
-  card.classList.toggle("flip");
-  statusMsg.textContent = "";
-  setTimeout(resizeCard, 400);
-}
-
-resizeCard();
-
-// Dummy credentials
-const correctEmail = "test@asterism.com";
-const correctPassword = "123456";
-
-// LOGIN
-const loginBtn = document.getElementById("loginBtn");
-const loginEmail = loginBox.querySelector('input[type="email"]');
-const loginPassword = loginBox.querySelector('input[type="password"]');
-
-function login(email, password) {
-  if(email === correctEmail && password === correctPassword) {
-    let countdown = 3;
-    const interval = setInterval(() => {
-      statusMsg.textContent = `✅ Login successful in ${countdown}..`;
-      countdown--;
-      if(countdown < 0) {
-        clearInterval(interval);
-        window.location.href = "home.html";
-      }
-    }, 1000);
-  } else {
-    statusMsg.textContent = "❌ Email/Password Incorrect, Please try again.";
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    statusMsg.textContent = "✅ Login success!";
+    window.location.href = "home.html";
+  } catch (err) {
+    statusMsg.textContent = err.message;
   }
-}
-
-loginBtn.addEventListener("click", () => {
-  login(loginEmail.value, loginPassword.value);
 });
 
-loginEmail.addEventListener("keydown", e => { if(e.key==="Enter") login(loginEmail.value, loginPassword.value); });
-loginPassword.addEventListener("keydown", e => { if(e.key==="Enter") login(loginEmail.value, loginPassword.value); });
-
-// REGISTER
+/* =========================
+   🔥 REGISTER
+========================= */
 const registerBtn = document.getElementById("registerBtn");
-const registerFields = registerBox.querySelectorAll("input, select");
 
-registerBtn.addEventListener("click", () => {
-  for(const el of registerFields) {
-    if(!el.value) {
-      statusMsg.textContent = "Please complete all required fields.";
-      return;
-    }
+registerBtn.addEventListener("click", async () => {
+  const email = document.querySelector('.email-group input').value + "@asterism.com";
+  const pass  = document.querySelector('input[name="register_password"]').value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+    statusMsg.textContent = "✅ Account created!";
+  } catch (err) {
+    statusMsg.textContent = err.message;
   }
-  statusMsg.textContent = "✅ Registration successful (not actually implemented).";
 });
-
-// Enter key for register
-registerFields.forEach(f => f.addEventListener("keydown", e => {
-  if(e.key === "Enter") registerBtn.click();
-}));
 </script>
 
 </body>
