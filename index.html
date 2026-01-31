@@ -289,6 +289,8 @@ resizeCard();
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* =========================
    🔥 Your Firebase Config
@@ -307,6 +309,7 @@ const firebaseConfig = {
 ========================= */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 /* =========================
    🔥 LOGIN
@@ -333,15 +336,43 @@ loginBtn.addEventListener("click", async () => {
 const registerBtn = document.getElementById("registerBtn");
 
 registerBtn.addEventListener("click", async () => {
+
   const email = document.querySelector('.email-group input').value + "@asterism.com";
   const pass  = document.querySelector('input[name="register_password"]').value;
 
+  const first = document.querySelector('input[name="first_name"]').value;
+  const last  = document.querySelector('input[name="last_name"]').value;
+  const middle = document.querySelector('input[name="middle_name"]').value;
+  const contact = document.querySelector('input[name="contact_number"]').value;
+  const country = document.querySelector('select[name="country"]').value;
+  const gender = document.querySelector('select[name="gender"]').value;
+  const birthdate = document.querySelector('input[name="birthdate"]').value;
+
   try {
-    await createUserWithEmailAndPassword(auth, email, pass);
+
+    // ✅ create auth account
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+
+    // ✅ save profile to Firestore
+    await setDoc(doc(db, "users", userCred.user.uid), {
+      first,
+      last,
+      middle,
+      contact,
+      country,
+      gender,
+      birthdate,
+      email,
+      createdAt: new Date()
+    });
+
     statusMsg.textContent = "✅ Account created!";
+    window.location.href = "home.html";
+
   } catch (err) {
     statusMsg.textContent = err.message;
   }
+
 });
 </script>
 
