@@ -262,6 +262,26 @@ footer a:hover { text-decoration: underline; }
   </footer>
 </div>
 
+<script>
+const card = document.getElementById("card");
+const loginBox = document.getElementById("loginBox");
+const registerBox = document.getElementById("registerBox");
+const statusMsg = document.getElementById("statusMsg");
+
+function resizeCard() {
+  const active = card.classList.contains("flip") ? registerBox : loginBox;
+  card.style.height = active.offsetHeight + "px";
+}
+
+function flipCard() {
+  card.classList.toggle("flip");
+  statusMsg.textContent = "";
+  setTimeout(resizeCard, 400);
+}
+
+resizeCard();
+</script>
+
 <script type="module">
 /* =========================
    🔥 Firebase Imports
