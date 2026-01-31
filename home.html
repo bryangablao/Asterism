@@ -480,7 +480,7 @@ input, textarea, select {
   -webkit-tap-highlight-color: transparent;
 }
 
-..avatar img {
+.avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1212,13 +1212,69 @@ input, textarea, select {
  </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 const panel = document.getElementById("sidePanel");
 const title = document.getElementById("panelTitle");
 const content = document.getElementById("panelContent");
 const main = document.getElementById("mainContent");
 const DEFAULT_TAGS = ["Newbie", "Friendly", "Amazed", "Talkative"];
 const DEFAULT_BIO = "Explorer of ideas and digital worlds.";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB3W5StEiqUhysp7cMpnoh64qelbY8CO4U",
+  authDomain: "asterism-b8a45.firebaseapp.com",
+  projectId: "asterism-b8a45",
+  storageBucket: "asterism-b8a45.appspot.com",
+  messagingSenderId: "313916930564",
+  appId: "1:313916930564:web:5f5cae392b66c27dea1351"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+  }
+});
+
+async function loadProfileFromFirebase() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  document.getElementById("usernameValue").textContent = data.username || "";
+  document.getElementById("userIdValue").textContent = user.uid.slice(0,6);
+  document.getElementById("bioTextarea").value = data.bio || "";
+
+  if (data.avatar) {
+    document.getElementById("avatarImg").src = data.avatar;
+  }
+}
+
+async function saveProfileState() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  await updateDoc(doc(db, "users", user.uid), {
+    bio: document.getElementById("bioTextarea").value,
+    tags: [...document.querySelectorAll(".tag-display")]
+      .map(t => t.textContent)
+  });
+}
 
 function openPanel(type) {
   if (panel.classList.contains("active") && title.textContent.toLowerCase() === type) {
@@ -1835,8 +1891,8 @@ function showProfile() {
   overlay.onclick = closeTagModal;
 
   setTimeout(() => {
-    loadProfileState();
-  }, 0);
+  loadProfileFromFirebase();
+}, 0);
  }
 
 function switchProfileTab(tab, type) {
@@ -1989,16 +2045,20 @@ document.addEventListener("click", e => {
   }
 });
 
-function resetBio() {
-  document.getElementById("bioTextarea").value = "";
+async function resetBio() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  document.getElementById("bioTextarea").value = DEFAULT_BIO;
 
   document.querySelectorAll(".tag-display")
-    .forEach((tag, i) => {
-      tag.textContent = DEFAULT_TAGS[i];
-    });
+    .forEach((tag, i) => tag.textContent = DEFAULT_TAGS[i]);
 
-  localStorage.removeItem("profileData");
-  closeTagModal(); // ✅ ADD THIS
+  await updateDoc(doc(db, "users", user.uid), {
+    bio: DEFAULT_BIO,
+    tags: DEFAULT_TAGS
+  });
+
   showTagStatus("Profile reset to default.", "info");
 }
 
@@ -2045,10 +2105,23 @@ function saveProfile() {
   main.prepend(msg);
 }
 
-function uploadAvatar(e) {
-  const img = document.getElementById("avatarImg");
-  img.src = URL.createObjectURL(e.target.files[0]);
-  saveProfileState();
+async function uploadAvatar(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+
+  const avatarRef = ref(storage, "avatars/" + user.uid);
+
+  await uploadBytes(avatarRef, file);
+
+  const url = await getDownloadURL(avatarRef);
+
+  document.getElementById("avatarImg").src = url;
+
+  await updateDoc(doc(db, "users", user.uid), {
+    avatar: url
+  });
 }
 
 function toggleProfileMenu() {
@@ -2449,13 +2522,15 @@ function typingIndicator(cb) {
   }, 80); // speed per letter (ms)
 }
 
-function saveProfileState() {
-  localStorage.setItem("profileData", JSON.stringify({
-    avatar: document.getElementById("avatarImg")?.src || "",
-    bio: document.querySelector(".bio-textarea")?.value || "",
+async function saveProfileState() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  await updateDoc(doc(db, "users", user.uid), {
+    bio: document.getElementById("bioTextarea").value,
     tags: [...document.querySelectorAll(".tags .tag")]
       .map(t => t.textContent)
-  }));
+  });
 }
 
 function showBioHint(show) {
