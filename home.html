@@ -1158,6 +1158,7 @@ input, textarea, select {
 
 <div class="app">
 
+<div id="friendModalOverlay" class="modal-overlay hidden"></div>
   <!-- ICON BAR -->
   <div class="icon-bar">
     <div class="icon" onclick="openMainMenu()">※</div>
@@ -1265,7 +1266,7 @@ async function loadProfileFromFirebase() {
   }
 }
 
-function openPanel(type) {
+window.openPanel = function(type) {
   if (panel.classList.contains("active") && title.textContent.toLowerCase() === type) {
     panel.classList.remove("active");
     return;
@@ -1283,7 +1284,7 @@ function openPanel(type) {
 
   title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
   content.textContent = data[type];
-}
+};
 
 function closeSidePanel() {
   panel.classList.remove("active");
@@ -1614,14 +1615,6 @@ function showSent() {
   hideAllLists();
   document.getElementById("sentList").classList.remove("hidden");
 }
-
-/* Close when clicking outside */
-document.addEventListener("DOMContentLoaded", () => {
-  const overlay = document.getElementById("friendModalOverlay");
-  if (overlay) {
-    overlay.onclick = closeFriendModal;
-  }
-});
 
 function loadFriendRequests() {
   // PEOPLE WHO ADDED YOU
@@ -2114,7 +2107,7 @@ async function uploadAvatar(e) {
   });
 }
 
-function toggleProfileMenu() {
+window.toggleProfileMenu = function() {
   const menu = document.getElementById("profileMenu");
   menu.classList.toggle("hidden");
 }
@@ -2226,20 +2219,14 @@ function closeModal(e) {
 
 const profileMenu = document.getElementById("profileMenu");
 
-function showHome() {
+window.showHome = function() {
   panel.classList.remove("active");
 
   renderMain(`
     <h1>Welcome back 👋</h1>
     <p>This is your Asterism homepage.</p>
   `);
-}
-
-function openProfileFromMenu() {
-  document.getElementById("profileMenu").classList.add("hidden");
-  panel.classList.remove("active");
-  showProfile();
-}
+};
 
 function openHelp() {
   renderMain(`
@@ -2516,10 +2503,14 @@ async function saveProfileState() {
   const user = auth.currentUser;
   if (!user) return;
 
+  const bio = document.getElementById("bioTextarea").value;
+
+  const tags = [...document.querySelectorAll(".tag-display")]
+    .map(t => t.textContent);
+
   await updateDoc(doc(db, "users", user.uid), {
-    bio: document.getElementById("bioTextarea").value,
-    tags: [...document.querySelectorAll(".tag-display")]
-      .map(t => t.textContent)
+    bio,
+    tags
   });
 }
 
@@ -2705,7 +2696,7 @@ document.querySelectorAll('.value-address').forEach(el => {
   if (length > 45) el.style.fontSize = '11px';
 });
 
-document.getElementById("userIdValue").textContent = firebaseUserId;
+document.getElementById("userIdValue").textContent = user.uid.slice(0,6);
 
 Object.assign(window, {
   openPanel,
@@ -2791,6 +2782,11 @@ Object.assign(window, {
     <div id="modalContent"></div>
     <div id="modalStatus" class="card-desc"></div>
   </div>
+</div>
+
+<!-- SYSTEM MODAL -->
+<div id="modalOverlay" class="system-modal hidden">
+  <div id="modalContent" class="modal-box"></div>
 </div>
 
 </body>
