@@ -2722,6 +2722,30 @@ document.querySelectorAll('.value-address').forEach(el => {
 document.getElementById("usernameValue").textContent = firebaseUsername;
 document.getElementById("userIdValue").textContent = firebaseUserId;
 
+Object.assign(window, {
+  openPanel,
+  openMainMenu,
+  showHome,
+  showNotifications,
+  showMessages,
+  showFriendList,
+  toggleProfileMenu,
+  openProfileFromMenu,
+  openSettingsFromMenu,
+  openHelp,
+  openLogout,
+  closeSidePanel,
+  renderMain,
+  switchProfileTab,
+  toggleAvatarMenu,
+  uploadProfilePhoto,
+  removeProfilePhoto,
+  resetBio,
+  openTagModal,
+  closeTagModal,
+  saveTag
+});
+
 </script>
 
 <!-- Overlay -->
